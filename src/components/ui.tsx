@@ -49,3 +49,33 @@ export function Logo({ className = "" }: { className?: string }) {
     </span>
   );
 }
+
+const STATUS_STYLES: Record<string, string> = {
+  pending: "border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-300",
+  verified: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  disputed: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  removed: "border-border bg-background text-muted",
+};
+
+export function StatusBadge({ status, label }: { status: string; label: string }) {
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${
+        STATUS_STYLES[status] ?? STATUS_STYLES.pending
+      }`}
+    >
+      {label}
+    </span>
+  );
+}
+
+export function BackLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link href={href} className="inline-flex min-h-11 items-center text-sm font-semibold text-muted">
+      ‹ {label}
+    </Link>
+  );
+}
+
+export const inputClass =
+  "block min-h-14 w-full rounded-2xl border border-border bg-surface px-4 text-base outline-none focus:border-accent";

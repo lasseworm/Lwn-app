@@ -78,7 +78,7 @@ export default async function MachinePage(props: PageProps<"/katalog/[slug]">) {
             {(m.secondary_muscles ?? []).length > 0 && (
               <div>
                 <dt className="text-sm font-semibold text-muted">{t.catalog.secondary}</dt>
-                <dd className="text-base">{m.secondary_muscles.map(muscleName).join(", ")}</dd>
+                <dd className="text-base">{(m.secondary_muscles ?? []).map(muscleName).join(", ")}</dd>
               </div>
             )}
           </dl>

@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { t } from "@/i18n";
 
-// Flere punkter (Program, Mit center, Fremgang, Profil) tilføjes i de næste trin.
+// Flere punkter (Program, Fremgang, Profil) tilføjes i de næste trin.
 const items = [
   { href: "/hjem", label: t.nav.home, icon: HomeIcon },
+  { href: "/center", label: t.nav.center, icon: DumbbellIcon },
   { href: "/katalog", label: t.nav.catalog, icon: GridIcon },
 ] as const;
 
@@ -55,6 +56,14 @@ function GridIcon({ active }: { active: boolean }) {
       <rect x="14" y="3" width="7" height="7" rx="1.5" />
       <rect x="3" y="14" width="7" height="7" rx="1.5" />
       <rect x="14" y="14" width="7" height="7" rx="1.5" />
+    </svg>
+  );
+}
+
+function DumbbellIcon({ active }: { active: boolean }) {
+  return (
+    <svg aria-hidden width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.5 : 2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6.5 6.5h11M6.5 17.5h11M4 9v6M20 9v6M2 11v2M22 11v2M6.5 5v14M17.5 5v14" />
     </svg>
   );
 }
