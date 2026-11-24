@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui";
+import { Turnstile, TURNSTILE_SITE_KEY, type TurnstileHandle } from "@/components/turnstile";
 import { t } from "@/i18n";
 import { sendMagicLink, signInWithGoogle, type LoginState } from "./actions";
 
@@ -12,12 +13,28 @@ export function LoginForm({ next }: { next: string }) {
   // Når brugeren vælger "brug en anden e-mail", skjules netop dette svar.
   const [dismissed, setDismissed] = useState<LoginState | null>(null);
 
+  // CAPTCHA: et token kan kun bruges én gang, så det nulstilles efter hvert forsøg.
+  const turnstile = useRef<TurnstileHandle>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaError, setCaptchaError] = useState(false);
+  const needsCaptcha = Boolean(TURNSTILE_SITE_KEY);
+  useEffect(() => {
+    if (state.status !== "idle") turnstile.current?.reset();
+  }, [state]);
+
   if (state.status === "sent" && state !== dismissed) {
     return (
       <div className="mt-8 rounded-3xl border border-border bg-surface p-6" role="status">
         <h2 className="text-xl font-bold">{t.login.sentTitle}</h2>
         <p className="mt-2 text-base text-muted">{t.login.sentBody(state.email)}</p>
-        <Button variant="secondary" className="mt-6" onClick={() => setDismissed(state)}>
+        <Button
+          variant="secondary"
+          className="mt-6"
+          onClick={() => {
+            setDismissed(state);
+            turnstile.current?.reset();
+          }}
+        >
           {t.login.tryAgain}
         </Button>
       </div>
@@ -51,8 +68,23 @@ export function LoginForm({ next }: { next: string }) {
             {state.message}
           </p>
         )}
-        <Button type="submit" disabled={pending}>
-          {pending ? t.login.sending : t.login.sendLink}
+        <input type="hidden" name="captchaToken" value={captchaToken ?? ""} />
+        <Turnstile
+          ref={turnstile}
+          action="login"
+          onToken={(token) => {
+            setCaptchaToken(token);
+            if (token) setCaptchaError(false);
+          }}
+          onError={() => setCaptchaError(true)}
+        />
+        {captchaError && (
+          <p role="alert" className="text-sm text-danger">
+            {t.login.errors.captchaLoad}
+          </p>
+        )}
+        <Button type="submit" disabled={pending || (needsCaptcha && !captchaToken)}>
+          {pending ? t.login.sending : needsCaptcha && !captchaToken ? t.login.verifying : t.login.sendLink}
         </Button>
       </form>
 

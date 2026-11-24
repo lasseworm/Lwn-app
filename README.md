@@ -114,6 +114,19 @@ Vercel → Settings → Domains → tilføj `lwn.dk` (og `www.lwn.dk`). Opret de
 
 ---
 
+## CAPTCHA på login (Cloudflare Turnstile)
+
+Login-formularen (magic link) er beskyttet mod robotter med Cloudflare Turnstile. Tjekket kører
+normalt usynligt og vises kun, hvis Cloudflare har brug for et klik. Google-login er ikke omfattet,
+fordi Google selv beskytter det trin.
+
+Opsætning (rækkefølgen er vigtig, så ingen låses ude):
+1. Opret et Turnstile-widget på dash.cloudflare.com → Turnstile. Tilføj domænerne `lwn.dk`, `www.lwn.dk` og `vercel.app`. Vælg widget-tilstanden "Managed".
+2. Sæt `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (site key) i Vercel for Production og Preview, og redeploy.
+3. **Derefter** skal du i Supabase gå til Authentication → Attack Protection → Enable CAPTCHA protection → Turnstile og indsætte den **hemmelige** nøgle.
+
+Uden site key i Vercel vises intet tjek, og login virker som før. Slår du det til i Supabase før trin 2, kan ingen logge ind med e-mail.
+
 ## Sikkerhed og data
 
 - **RLS er slået til på alle tabeller.** Personlige data (profil, programmer, træning, progression, præferencer, feedback) kan kun ses af ejeren. Centre, udstyr og katalog kan læses af alle indloggede. Ikke-indloggede kan intet læse.

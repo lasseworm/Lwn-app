@@ -25,21 +25,31 @@ export async function sendMagicLink(_prev: LoginState, formData: FormData): Prom
     return { status: "error", message: t.login.errors.invalidEmail, email };
   }
 
+  // Token fra Cloudflare Turnstile. Supabase verificerer det selv, når CAPTCHA er slået til
+  // under Authentication → Attack Protection. Er det slået fra, ignoreres det.
+  const captchaToken = String(formData.get("captchaToken") ?? "").trim() || undefined;
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: callbackUrl(await getOrigin(), next),
       shouldCreateUser: true,
+      captchaToken,
     },
   });
 
   if (error) {
     const rateLimited = error.status === 429 || /rate limit/i.test(error.message);
+    const captchaFailed = /captcha/i.test(error.message);
     console.error("signInWithOtp fejlede:", error.message);
     return {
       status: "error",
-      message: rateLimited ? t.login.errors.rateLimited : t.login.errors.generic,
+      message: captchaFailed
+        ? t.login.errors.captcha
+        : rateLimited
+          ? t.login.errors.rateLimited
+          : t.login.errors.generic,
       email,
     };
   }
