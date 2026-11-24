@@ -52,11 +52,11 @@ const LOGO_ALT = "LWN – Learn. Workout. Never Quit.";
  * så det kan læses på lys baggrund. Skiftet sker med CSS (prefers-color-scheme).
  */
 export function Logo({ className = "h-11", eager = false }: { className?: string; eager?: boolean }) {
-  const common = { alt: LOGO_ALT, loading: eager ? ("eager" as const) : undefined, sizes: "160px" };
+  const common = { loading: eager ? ("eager" as const) : undefined, sizes: "160px" };
   return (
     <span className={`inline-flex shrink-0 ${className}`}>
-      <Image src={logoDarkText} {...common} className="h-full w-auto dark:hidden" />
-      <Image src={logoLightText} {...common} className="hidden h-full w-auto dark:block" />
+      <Image src={logoDarkText} alt={LOGO_ALT} {...common} className="h-full w-auto dark:hidden" />
+      <Image src={logoLightText} alt={LOGO_ALT} {...common} className="hidden h-full w-auto dark:block" />
     </span>
   );
 }
