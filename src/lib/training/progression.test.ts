@@ -178,6 +178,10 @@ describe("evaluate – Progression virkede ikke (hold_level)", () => {
     expect(next).toMatchObject({ hold_level: true, current_weight_kg: 28, last_successful_weight_kg: 21 });
   });
 
+  it("trykket på en øvelse, der aldrig er udført: intet gemmes", () => {
+    expect(evaluate(null, prescribe(null, plan, "weighted", stack, NOW), plan, "weighted", stack, [], { progressionDidNotWork: true })).toBeNull();
+  });
+
   it("trykket uden tidligere vellykket niveau: nuværende mål bliver niveauet", () => {
     const s = state({ current_weight_kg: 21, current_reps: 9 });
     const next = evaluate(s, prescribe(s, plan, "weighted", stack, NOW), plan, "weighted", stack, [], { progressionDidNotWork: true });

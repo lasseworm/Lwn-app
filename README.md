@@ -4,7 +4,7 @@
 
 PWA bygget med Next.js 16 (App Router, TypeScript, Tailwind 4), Supabase (Postgres, Auth, Storage, RLS) og Serwist (service worker). Produktbeskrivelse og byggeplan: [`docs/LWN-samlet-prompt.md`](docs/LWN-samlet-prompt.md) og [`docs/LWN-byggeplan.md`](docs/LWN-byggeplan.md).
 
-**Status:** Trin 0, 1 og 2 er færdige: fundament, login, database med RLS, startkatalog, centre og udstyr med foto, AI-forslag og vægttrin.
+**Status:** Trin 0–3 er færdige: fundament, login, database med RLS, startkatalog, centre og udstyr (foto, AI-forslag, vægttrin), onboarding, programgenerator, træningsskærm og automatisk progression.
 
 ---
 
@@ -20,6 +20,9 @@ src/
     (app)/katalog            Udstyrskatalog + maskinside med instruktioner
     (app)/center             Mit center: find/opret center, udstyrsliste, tilføj maskine,
                              ekstra standardudstyr, udstyrsside (bekræft/ret/rapportér/fjern)
+    (app)/onboarding         Erfaring, mål, pas/uge, opvarmning
+    (app)/program            Mit program: ugeplan, start pas, generér nyt program
+    (app)/traening/[id]      Træningsskærm (aktivt pas) og opsummering
     api/ai/equipment         Foto → forslag til maskintype (Claude, struktureret JSON)
     api/ai/weight-stack      Foto af vægtstak → vægttrin, min/max, mellemplade
     privatliv/               Privatlivspolitik (udkast)
@@ -30,6 +33,8 @@ src/
   lib/supabase/              Supabase-klienter + genererede databasetyper
   lib/ai/                    AI-tilstand (off/mock/live), model, genkendelse, fotohåndtering
   lib/equipment/weights.ts   Vægttrin-logik (med tests)
+  lib/training/progression.ts  Dobbelt progression, hold-level, pause, smerte (med tests)
+  lib/training/generator.ts    Programgenerator (med tests mod det rigtige katalog)
   lib/image.ts               Komprimering i browseren (fjerner EXIF/GPS)
   i18n/                      Alle tekster (dansk først, klar til flere sprog)
 supabase/
@@ -63,6 +68,13 @@ Nulstil databasen (kører alle migrationer + `seed.sql` igen): `npm run db:reset
 Øvrige kommandoer: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`.
 
 ---
+
+## Program og progression (Trin 3)
+
+- **Programgenerator:** 2 pas = fuld krop A/B, 3 pas = fuld krop A/B/C, 4 pas = overkrop/underkrop × 2. Maskiner kommer først, frie vægte kun hvis en bevægelse ellers ikke kan dækkes, og intet tvinges ind. Husker brugerens udeladelser og foretrukne alternativer. Viser hvilke muskelgrupper centret mangler udstyr til.
+- **Progression:** dobbelt progression (+1 rep, derefter næste gyldige vægttrin), og den sænker aldrig automatisk. "Progression virkede ikke" gentager sidste vellykkede niveau. Efter mere end 14 dages pause foreslås en lettere start. Smerte stopper øvelsen uden progression. Assisterede maskiner går den anden vej (mindre hjælp).
+- **Data går ikke tabt:** Hvert sæt gemmes med det samme. Et pas afsluttes, og progressionen gemmes, atomisk i databasen (`finish_workout`), og serveren genberegner progressionen selv.
+- Tærskler kan ændres i `PROGRESSION_CONFIG`. Evidensgrundlaget står i [`docs/evidens.md`](docs/evidens.md).
 
 ## AI-genkendelse og pris
 

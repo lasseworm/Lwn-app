@@ -141,6 +141,9 @@ export function evaluate(
 ): NextState | null {
   const done = performed.filter((s) => s.completed && s.reps > 0);
   if (done.length === 0 && !outcome.progressionDidNotWork) return null;
+  // "Progression virkede ikke" uden noget niveau at gentage (aldrig udført): intet at gemme
+  const hasLevel = state != null && (load === "bodyweight" ? state.current_reps != null : state.current_weight_kg != null);
+  if (outcome.progressionDidNotWork && !hasLevel && done.length === 0) return null;
 
   const prev: NextState = {
     current_weight_kg: state?.current_weight_kg ?? null,
