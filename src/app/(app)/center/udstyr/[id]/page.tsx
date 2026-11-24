@@ -53,7 +53,7 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
       <BackLink href="/center" label={e.gyms?.name ?? t.gym.title} />
 
       {justAdded && (
-        <p role="status" className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm">
+        <p role="status" className="rounded-2xl border border-accent/50 bg-accent/15 p-4 text-sm">
           ✓ {t.equipment.savedPending}
         </p>
       )}
@@ -131,7 +131,7 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
                 maxLength={300}
                 rows={3}
                 placeholder={t.equipment.reportPlaceholder}
-                className="block w-full rounded-2xl border border-border bg-surface p-4 text-base outline-none focus:border-accent"
+                className="block w-full rounded-2xl border border-border bg-surface p-4 text-base outline-none focus:border-accent-text"
               />
               <Button type="submit" variant="secondary">
                 {t.equipment.sendReport}

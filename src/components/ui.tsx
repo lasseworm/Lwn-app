@@ -39,7 +39,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 
 export function SampleBadge({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
+    <span className="inline-flex items-center rounded-full border border-dashed border-muted px-2.5 py-0.5 text-xs font-semibold text-muted">
       {label}
     </span>
   );
@@ -78,9 +78,10 @@ export function Logo({
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-300",
-  verified: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-  disputed: "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  // Bekræftet = orange (brandfarven), afventer = neutral, omstridt = rød
+  pending: "border-border bg-background text-muted",
+  verified: "border-accent/50 bg-accent/15 text-accent-text",
+  disputed: "border-danger/40 bg-danger/10 text-danger",
   removed: "border-border bg-background text-muted",
 };
 
@@ -105,4 +106,4 @@ export function BackLink({ href, label }: { href: string; label: string }) {
 }
 
 export const inputClass =
-  "block min-h-14 w-full rounded-2xl border border-border bg-surface px-4 text-base outline-none focus:border-accent";
+  "block min-h-14 w-full rounded-2xl border border-border bg-surface px-4 text-base outline-none focus:border-accent-text";
