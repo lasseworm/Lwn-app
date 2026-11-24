@@ -1,4 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
+import logoLightText from "../../public/brand/lwn-logo-transparent.png";
+import logoDarkText from "../../public/brand/lwn-logo-dark-text.png";
 import type { ComponentProps, ReactNode } from "react";
 
 const base =
@@ -30,7 +33,7 @@ export function ButtonLink({
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-3xl border border-border bg-surface p-5 ${className}`}>{children}</div>
+    <div className={`rounded-2xl border border-border bg-surface p-5 ${className}`}>{children}</div>
   );
 }
 
@@ -42,10 +45,34 @@ export function SampleBadge({ label }: { label: string }) {
   );
 }
 
-export function Logo({ className = "" }: { className?: string }) {
+const LOGO_ALT = "LWN – Learn. Workout. Never Quit.";
+
+/**
+ * Billedlogo. Logoets "LWN" er hvidt; i lys tilstand vises en variant med mørk tekst,
+ * så det kan læses på lys baggrund. Skiftet sker med CSS (prefers-color-scheme).
+ */
+export function Logo({
+  className = "h-11",
+  eager = false,
+  onDark = false,
+}: {
+  className?: string;
+  eager?: boolean;
+  /** Altid hvid tekst – til flader, der er mørke i både lys og mørk tilstand (fx forsidens hero). */
+  onDark?: boolean;
+}) {
+  const common = { loading: eager ? ("eager" as const) : undefined, sizes: "160px" };
+  if (onDark) {
+    return (
+      <span className={`inline-flex shrink-0 ${className}`}>
+        <Image src={logoLightText} alt={LOGO_ALT} {...common} className="h-full w-auto" />
+      </span>
+    );
+  }
   return (
-    <span className={`inline-flex items-baseline font-black tracking-tight ${className}`}>
-      LWN<span className="text-accent">.</span>
+    <span className={`inline-flex shrink-0 ${className}`}>
+      <Image src={logoDarkText} alt={LOGO_ALT} {...common} className="h-full w-auto dark:hidden" />
+      <Image src={logoLightText} alt={LOGO_ALT} {...common} className="hidden h-full w-auto dark:block" />
     </span>
   );
 }

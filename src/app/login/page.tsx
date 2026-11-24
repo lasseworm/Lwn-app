@@ -15,7 +15,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-6 pb-8 pt-[max(2.5rem,env(safe-area-inset-top))]">
       <Link href="/" aria-label={t.app.fullName}>
-        <Logo className="text-2xl" />
+        <Logo className="h-12" eager />
       </Link>
 
       <h1 className="mt-12 text-3xl font-black tracking-tight">{t.login.title}</h1>

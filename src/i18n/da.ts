@@ -9,11 +9,28 @@ export const da = {
   },
   welcome: {
     lead: "Fotografér maskinerne i dit center. Få et program, der passer til netop dem. Lær hvordan – ikke kun hvad.",
-    points: [
-      "Bygget på udstyret i dit eget center",
-      "Automatisk progression – gratis",
-      "Vejledning til hver maskine",
+    // De tre kort under forsidens hero. "benefit" er de oprindelige fordele, flettet ind i kortene.
+    features: [
+      {
+        key: "learn",
+        title: "LEARN",
+        text: "Lær øvelser, maskiner og korrekt teknik.",
+        benefit: "Vejledning til hver maskine",
+      },
+      {
+        key: "start",
+        title: "GET STARTED",
+        text: "Få et program, der passer til udstyret i dit eget center.",
+        benefit: "Bygget på udstyret i dit eget center",
+      },
+      {
+        key: "progress",
+        title: "KEEP PROGRESSING",
+        text: "Følg din udvikling.",
+        benefit: "Automatisk progression – gratis",
+      },
     ],
+    privacy: "Privatlivspolitik",
     start: "Kom i gang",
     haveAccount: "Jeg har allerede en konto",
   },
