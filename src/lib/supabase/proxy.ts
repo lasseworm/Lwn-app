@@ -15,6 +15,25 @@ function isPublic(pathname: string) {
  * Baseret på Supabases officielle mønster for @supabase/ssr.
  */
 export async function updateSession(request: NextRequest) {
+  // Sikkerhedsnet: Er login-adressen ikke godkendt i Supabase (Authentication → URL
+  // Configuration → Redirect URLs), sender Supabase brugeren til Site URL – forsiden –
+  // med login-koden i adressen. Send den videre til /auth/callback, så login gennemføres.
+  if (request.nextUrl.pathname === "/") {
+    const params = request.nextUrl.searchParams;
+    if (params.has("code") || (params.has("token_hash") && params.has("type"))) {
+      const target = request.nextUrl.clone();
+      target.pathname = "/auth/callback";
+      if (!target.searchParams.has("next")) target.searchParams.set("next", "/hjem");
+      return NextResponse.redirect(target);
+    }
+    if (params.has("error_description")) {
+      const target = request.nextUrl.clone();
+      target.pathname = "/login";
+      target.search = "?error=callback";
+      return NextResponse.redirect(target);
+    }
+  }
+
   let response = NextResponse.next({ request });
   const { url, key } = supabaseEnv();
 
