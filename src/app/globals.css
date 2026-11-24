@@ -8,22 +8,26 @@
   --border: #e2e5ea;
   --brand: #0b1220;
   --brand-foreground: #ffffff;
-  --accent: #12b76a;
-  --accent-foreground: #04130b;
+  /* Orange er fyldfarve (knapper, ikoner). Tekst på orange er altid mørk – hvid har for lav kontrast. */
+  --accent: #ff8a00;
+  --accent-foreground: #111214;
+  /* Orange som TEKST på lys baggrund: mørkere nuance, 5:1 mod #f6f7f9 (WCAG AA) */
+  --accent-text: #a85400;
   --danger: #c0262d;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #070b13;
-    --surface: #0f1623;
-    --foreground: #eef1f6;
-    --muted: #9aa4b5;
-    --border: #1f2939;
-    --brand: #eef1f6;
-    --brand-foreground: #070b13;
-    --accent: #32d583;
-    --accent-foreground: #04130b;
+    --background: #111214;
+    --surface: #1c1d20;
+    --foreground: #ffffff;
+    --muted: #b8b8b8;
+    --border: #2c2d31;
+    --brand: #ffffff;
+    --brand-foreground: #111214;
+    --accent: #ff8a00;
+    --accent-foreground: #111214;
+    --accent-text: #ff8a00; /* 7,9:1 mod #111214 */
     --danger: #f97066;
   }
 }
@@ -38,8 +42,10 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-text: var(--accent-text);
   --color-danger: var(--danger);
   --font-sans: var(--font-inter);
+  --font-heading: var(--font-heading);
 }
 
 html {
@@ -51,8 +57,18 @@ body {
   color: var(--foreground);
 }
 
+/* Overskrifter i den smalle, fede skrift fra den nye identitet */
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading), var(--font-inter), sans-serif;
+  /* Bevidst uden @layer: overstyrer "tracking-tight", der var tænkt til Inter og
+     presser den smalle overskriftsskrift for meget sammen. */
+  letter-spacing: 0;
+}
+
 /* Tydeligt fokus til tastatur-/skærmlæserbrugere */
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--accent-text);
   outline-offset: 2px;
 }

@@ -44,7 +44,7 @@ export function LoginForm({ next }: { next: string }) {
           placeholder={t.login.emailPlaceholder}
           aria-invalid={state.status === "error"}
           aria-describedby={state.status === "error" ? "email-error" : undefined}
-          className="block min-h-14 w-full rounded-2xl border border-border bg-surface px-4 text-base outline-none focus:border-accent"
+          className="block min-h-14 w-full rounded-2xl border border-border bg-surface px-4 text-base outline-none focus:border-accent-text"
         />
         {state.status === "error" && (
           <p id="email-error" role="alert" className="text-sm text-danger">
