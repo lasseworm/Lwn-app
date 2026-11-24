@@ -51,8 +51,24 @@ const LOGO_ALT = "LWN – Learn. Workout. Never Quit.";
  * Billedlogo. Logoets "LWN" er hvidt; i lys tilstand vises en variant med mørk tekst,
  * så det kan læses på lys baggrund. Skiftet sker med CSS (prefers-color-scheme).
  */
-export function Logo({ className = "h-11", eager = false }: { className?: string; eager?: boolean }) {
+export function Logo({
+  className = "h-11",
+  eager = false,
+  onDark = false,
+}: {
+  className?: string;
+  eager?: boolean;
+  /** Altid hvid tekst – til flader, der er mørke i både lys og mørk tilstand (fx forsidens hero). */
+  onDark?: boolean;
+}) {
   const common = { loading: eager ? ("eager" as const) : undefined, sizes: "160px" };
+  if (onDark) {
+    return (
+      <span className={`inline-flex shrink-0 ${className}`}>
+        <Image src={logoLightText} alt={LOGO_ALT} {...common} className="h-full w-auto" />
+      </span>
+    );
+  }
   return (
     <span className={`inline-flex shrink-0 ${className}`}>
       <Image src={logoDarkText} alt={LOGO_ALT} {...common} className="h-full w-auto dark:hidden" />
