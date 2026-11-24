@@ -12,9 +12,11 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:push": "supabase db push",
-    "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts"
+    "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.12.0",
     "@serwist/turbopack": "^9.5.15",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.2",
@@ -23,11 +25,12 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
-    "serwist": "^9.5.15"
+    "serwist": "^9.5.15",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "4.3.3",
-    "@types/node": "^20",
+    "@types/node": "^22.20.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "esbuild": "^0.28.2",
@@ -35,7 +38,8 @@
     "eslint-config-next": "16.4.6",
     "supabase": "^3.2.0",
     "tailwindcss": "4.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.1.1"
   },
   "engines": {
     "node": ">=20.9"

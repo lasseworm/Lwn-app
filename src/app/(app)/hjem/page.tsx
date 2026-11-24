@@ -15,10 +15,21 @@ export default async function HomePage() {
   if (!user) redirect("/login");
 
   const [{ data: profile }, machineTypes, exercises] = await Promise.all([
-    supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle(),
+    supabase.from("profiles").select("display_name, active_gym_id, gyms!profiles_active_gym_id_fkey(id, name, city)").eq("id", user.id).maybeSingle(),
     supabase.from("machine_types").select("id", { count: "exact", head: true }),
     supabase.from("exercises").select("id", { count: "exact", head: true }),
   ]);
+
+  const gym = profile?.gyms ?? null;
+  const equipmentCount = gym
+    ? (
+        await supabase
+          .from("gym_equipment")
+          .select("id", { count: "exact", head: true })
+          .eq("gym_id", gym.id)
+          .neq("status", "removed")
+      ).count ?? 0
+    : 0;
 
   return (
     <main className="space-y-5">
@@ -37,6 +48,28 @@ export default async function HomePage() {
           {t.home.signedInAs} {user.email}
         </p>
       </section>
+
+      <Card>
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">{t.gym.title}</h2>
+        {gym ? (
+          <>
+            <p className="mt-2 text-2xl font-black tracking-tight">{gym.name}</p>
+            <p className="text-base text-muted">
+              {gym.city} · {t.gym.equipmentCount(equipmentCount)}
+            </p>
+            <ButtonLink href="/center" variant="secondary" className="mt-5">
+              {equipmentCount === 0 ? t.gym.addMachine : t.gym.title}
+            </ButtonLink>
+          </>
+        ) : (
+          <>
+            <p className="mt-2 text-base">{t.gym.noGym}</p>
+            <ButtonLink href="/center/find" className="mt-5">
+              {t.gym.chooseGym}
+            </ButtonLink>
+          </>
+        )}
+      </Card>
 
       <Card>
         <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">{t.home.nextUp}</h2>

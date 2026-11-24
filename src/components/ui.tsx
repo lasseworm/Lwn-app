@@ -39,7 +39,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 
 export function SampleBadge({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
+    <span className="inline-flex items-center rounded-full border border-dashed border-muted px-2.5 py-0.5 text-xs font-semibold text-muted">
       {label}
     </span>
   );
@@ -76,3 +76,34 @@ export function Logo({
     </span>
   );
 }
+
+const STATUS_STYLES: Record<string, string> = {
+  // Bekræftet = orange (brandfarven), afventer = neutral, omstridt = rød
+  pending: "border-border bg-background text-muted",
+  verified: "border-accent/50 bg-accent/15 text-accent-text",
+  disputed: "border-danger/40 bg-danger/10 text-danger",
+  removed: "border-border bg-background text-muted",
+};
+
+export function StatusBadge({ status, label }: { status: string; label: string }) {
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${
+        STATUS_STYLES[status] ?? STATUS_STYLES.pending
+      }`}
+    >
+      {label}
+    </span>
+  );
+}
+
+export function BackLink({ href, label }: { href: string; label: string }) {
+  return (
+    <Link href={href} className="inline-flex min-h-11 items-center text-sm font-semibold text-muted">
+      ‹ {label}
+    </Link>
+  );
+}
+
+export const inputClass =
+  "block min-h-14 w-full rounded-2xl border border-border bg-surface px-4 text-base outline-none focus:border-accent-text";

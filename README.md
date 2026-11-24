@@ -4,7 +4,7 @@
 
 PWA bygget med Next.js 16 (App Router, TypeScript, Tailwind 4), Supabase (Postgres, Auth, Storage, RLS) og Serwist (service worker). Produktbeskrivelse og byggeplan: [`docs/LWN-samlet-prompt.md`](docs/LWN-samlet-prompt.md) og [`docs/LWN-byggeplan.md`](docs/LWN-byggeplan.md).
 
-**Status:** Trin 0 + Trin 1 er færdige (fundament, login, database med RLS, startkatalog).
+**Status:** Trin 0, 1 og 2 er færdige: fundament, login, database med RLS, startkatalog, centre og udstyr med foto, AI-forslag og vægttrin.
 
 ---
 
@@ -18,12 +18,19 @@ src/
     auth/callback/route.ts   Modtager login-links og Google-login
     (app)/hjem               Hjem (kræver login)
     (app)/katalog            Udstyrskatalog + maskinside med instruktioner
+    (app)/center             Mit center: find/opret center, udstyrsliste, tilføj maskine,
+                             ekstra standardudstyr, udstyrsside (bekræft/ret/rapportér/fjern)
+    api/ai/equipment         Foto → forslag til maskintype (Claude, struktureret JSON)
+    api/ai/weight-stack      Foto af vægtstak → vægttrin, min/max, mellemplade
     privatliv/               Privatlivspolitik (udkast)
     manifest.ts              PWA-manifest
     sw.ts                    Service worker (cacher kun statiske filer)
     serwist/[path]/route.ts  Serverer service workeren på /serwist/sw.js
   proxy.ts                   Fornyer session + beskytter sider bag login
-  lib/supabase/              Supabase-klienter (browser, server, proxy)
+  lib/supabase/              Supabase-klienter + genererede databasetyper
+  lib/ai/                    AI-tilstand (off/mock/live), model, genkendelse, fotohåndtering
+  lib/equipment/weights.ts   Vægttrin-logik (med tests)
+  lib/image.ts               Komprimering i browseren (fjerner EXIF/GPS)
   i18n/                      Alle tekster (dansk først, klar til flere sprog)
 supabase/
   migrations/                Skema, RLS, storage-bucket, startkatalog
@@ -53,7 +60,25 @@ npm run dev                 # åbn http://localhost:3000
 
 Nulstil databasen (kører alle migrationer + `seed.sql` igen): `npm run db:reset`.
 
-Øvrige kommandoer: `npm run lint`, `npm run typecheck`, `npm run build`.
+Øvrige kommandoer: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`.
+
+---
+
+## AI-genkendelse og pris
+
+AI'en bruges kun to steder: genkendelse af maskintype fra et foto og aflæsning af en vægtstak. Alt andet er gratis at køre.
+
+| `AI_MODE` | Hvad sker der | Pris |
+|---|---|---|
+| `off` (standard uden nøgle) | Brugeren vælger selv maskintype og vægttrin | Gratis |
+| `mock` | Opdigtede, realistiske svar (fx "Brystpres-maskine, 85 %"), så hele flowet kan testes | Gratis |
+| `live` (standard med nøgle) | Rigtige kald til Claude API | Tokens |
+
+- Model: `claude-haiku-5-5` (kan ændres med `LWN_AI_MODEL`). Billeder komprimeres til maks. 1280 px før upload, og effort er sat lavt for at holde prisen nede.
+- Sæt et månedligt forbrugsloft på console.anthropic.com → Settings → Limits.
+- Hvert kald logges i Vercel-loggen som `[ai] equipment model=… input=… output=…`, så forbruget kan følges.
+
+**Privatliv:** Brugeren skal bekræfte, at billedet kun viser udstyr. Billedet komprimeres i browseren, hvilket fjerner EXIF og GPS. Viser billedet en person eller ikke udstyr, sletter serveren det med det samme. Fotos af vægtstakke slettes altid efter aflæsning.
 
 > Service workeren er slået fra i `npm run dev`. Test PWA/installation med `npm run build && npm start`.
 
@@ -63,12 +88,7 @@ Nulstil databasen (kører alle migrationer + `seed.sql` igen): `npm run db:reset
 
 ### 1. Supabase (EU)
 1. Opret projekt på supabase.com → **Region: Central EU (Frankfurt)**.
-2. Kør migrationerne mod projektet:
-   ```bash
-   npx supabase login
-   npx supabase link --project-ref <projekt-ref>
-   npx supabase db push          # kører supabase/migrations/* (seed.sql køres IKKE)
-   ```
+2. Kør migrationerne mod projektet. **Bemærk:** produktionsdatabasen ("Fitness app development") er sat op via Supabase-forbindelsen i Claude Code. Nye migrationer køres derfor også derfra, ikke med `db push`.
 3. **Authentication → URL Configuration:**
    - Site URL: `https://lwn.dk`
    - Redirect URLs: `https://lwn.dk/auth/callback`, `http://localhost:3000/auth/callback` og `https://*-<dit-vercel-team>.vercel.app/auth/callback` (til preview-deploys)
@@ -82,7 +102,8 @@ Nulstil databasen (kører alle migrationer + `seed.sql` igen): `npm run db:reset
 3. **Settings → Environment Variables** (Production + Preview):
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-   - `ANTHROPIC_API_KEY` (først nødvendig i Trin 2)
+   - `ANTHROPIC_API_KEY` (valgfri – uden den kører AI i `off`-tilstand)
+   - `AI_MODE` (valgfri – sæt til `mock` for at teste flowet gratis)
 4. Deploy. Hver push til GitHub deployer automatisk.
 
 ### 3. Domænet lwn.dk
