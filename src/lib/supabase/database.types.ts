@@ -66,14 +66,14 @@ isOneToOne: false
                   ]
                 },"exercise_progress": {
                   Row: {
-                    "current_reps": number | null,"current_sets": number | null,"current_weight_kg": number | null,"equipment_id": string,"exercise_id": string,"hold_level": boolean | null,"last_performed_at": string | null,"last_successful_reps": number | null,"last_successful_sets": number | null,"last_successful_weight_kg": number | null,"user_id": string
+                    "baseline_weight_kg": number | null,"current_reps": number | null,"current_sets": number | null,"current_weight_kg": number | null,"equipment_id": string,"exercise_id": string,"hold_level": boolean | null,"last_performed_at": string | null,"last_successful_reps": number | null,"last_successful_sets": number | null,"last_successful_weight_kg": number | null,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "current_reps"?: number | null,"current_sets"?: number | null,"current_weight_kg"?: number | null,"equipment_id": string,"exercise_id": string,"hold_level"?: boolean | null,"last_performed_at"?: string | null,"last_successful_reps"?: number | null,"last_successful_sets"?: number | null,"last_successful_weight_kg"?: number | null,"user_id": string
+                    "baseline_weight_kg"?: number | null,"current_reps"?: number | null,"current_sets"?: number | null,"current_weight_kg"?: number | null,"equipment_id": string,"exercise_id": string,"hold_level"?: boolean | null,"last_performed_at"?: string | null,"last_successful_reps"?: number | null,"last_successful_sets"?: number | null,"last_successful_weight_kg"?: number | null,"user_id": string
                   }
                   Update: {
-                    "current_reps"?: number | null,"current_sets"?: number | null,"current_weight_kg"?: number | null,"equipment_id"?: string,"exercise_id"?: string,"hold_level"?: boolean | null,"last_performed_at"?: string | null,"last_successful_reps"?: number | null,"last_successful_sets"?: number | null,"last_successful_weight_kg"?: number | null,"user_id"?: string
+                    "baseline_weight_kg"?: number | null,"current_reps"?: number | null,"current_sets"?: number | null,"current_weight_kg"?: number | null,"equipment_id"?: string,"exercise_id"?: string,"hold_level"?: boolean | null,"last_performed_at"?: string | null,"last_successful_reps"?: number | null,"last_successful_sets"?: number | null,"last_successful_weight_kg"?: number | null,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -204,14 +204,14 @@ isOneToOne: false
                   ]
                 },"profiles": {
                   Row: {
-                    "active_gym_id": string | null,"created_at": string | null,"display_name": string | null,"experience_level": string | null,"goal": string | null,"id": string,"sessions_per_week": number | null,"training_type": string | null
+                    "active_gym_id": string | null,"created_at": string | null,"display_name": string | null,"experience_level": string | null,"goal": string | null,"id": string,"sessions_per_week": number | null,"training_type": string | null,"warmup_enabled": boolean
                   }
                   ComputedFields: never
                   Insert: {
-                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id": string,"sessions_per_week"?: number | null,"training_type"?: string | null
+                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id": string,"sessions_per_week"?: number | null,"training_type"?: string | null,"warmup_enabled"?: boolean
                   }
                   Update: {
-                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id"?: string,"sessions_per_week"?: number | null,"training_type"?: string | null
+                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id"?: string,"sessions_per_week"?: number | null,"training_type"?: string | null,"warmup_enabled"?: boolean
                   }
                   Relationships: [
                     {
@@ -396,17 +396,11 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "dearmor":
-{ Args: { "": string }; Returns: string
+            "create_program":
+{ Args: { "p_days": Json,"p_gym_id": string,"p_sessions_per_week": number }; Returns: string
                            },
-"gen_random_uuid":
-{ Args: Record<PropertyKey, never>; Returns: string
-                           },
-"gen_salt":
-{ Args: { "": string }; Returns: string
-                           },
-"pgp_armor_headers":
-{ Args: { "": string }; Returns: Record<string, unknown>[]
+"finish_workout":
+{ Args: { "p_progress": Json,"p_workout_id": string }; Returns: undefined
                            }
           }
           Enums: {

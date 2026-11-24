@@ -22,6 +22,11 @@ export default async function CenterPage(props: PageProps<"/center">) {
     .order("updated_at", { ascending: false });
 
   const visible = (equipment ?? []).filter((e) => e.status !== "removed");
+  const { count: programCount } = await supabase
+    .from("programs")
+    .select("id", { count: "exact", head: true })
+    .eq("active", true);
+  const hasProgram = (programCount ?? 0) > 0;
   const removedCount = (equipment ?? []).length - visible.length;
 
   const paths = visible.map((e) => e.photo_path).filter((p): p is string => Boolean(p));
@@ -52,6 +57,15 @@ export default async function CenterPage(props: PageProps<"/center">) {
           {t.gym.switchGym}
         </Link>
       </header>
+
+      {visible.length > 0 && !hasProgram && (
+        <div className="rounded-2xl border border-accent/50 bg-accent/10 p-4">
+          <p className="text-base font-semibold">{t.program.none}</p>
+          <ButtonLink href="/program" className="mt-3">
+            {t.program.generate}
+          </ButtonLink>
+        </div>
+      )}
 
       {sp.notice === "exists" && (
         <p role="status" className="rounded-2xl border border-border bg-surface p-4 text-sm">

@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Dumbbell, House, LayoutGrid } from "lucide-react";
+import { ClipboardList, Dumbbell, House, LayoutGrid } from "lucide-react";
 import { t } from "@/i18n";
 
-// Flere punkter (Program, Fremgang, Profil) tilføjes i de næste trin.
+// Flere punkter (Fremgang, Profil) tilføjes i de næste trin.
 const items = [
   { href: "/hjem", label: t.nav.home, icon: House },
+  { href: "/program", label: t.nav.program, icon: ClipboardList },
   { href: "/center", label: t.nav.center, icon: Dumbbell },
   { href: "/katalog", label: t.nav.catalog, icon: LayoutGrid },
 ] as const;
