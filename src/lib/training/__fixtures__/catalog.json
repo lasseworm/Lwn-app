@@ -1,0 +1,754 @@
+[
+ {
+  "id": "back_extension",
+  "slug": "back_extension",
+  "name": "Rygekstension",
+  "machine_type_slug": "back_extension",
+  "machine_category": "machine",
+  "movement_pattern": "hip_extension",
+  "primary_muscles": [
+   "lower_back",
+   "glutes"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "bar_hanging_knee_raise",
+  "slug": "bar_hanging_knee_raise",
+  "name": "Hængende knæløft",
+  "machine_type_slug": "pullup_bar",
+  "machine_category": "accessory",
+  "movement_pattern": "core_flexion",
+  "primary_muscles": [
+   "abs"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "bar_pullup",
+  "slug": "bar_pullup",
+  "name": "Pull-up",
+  "machine_type_slug": "pullup_bar",
+  "machine_category": "accessory",
+  "movement_pattern": "pull_vertical",
+  "primary_muscles": [
+   "lats"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 3,
+  "default_rep_max": 8
+ },
+ {
+  "id": "bb_back_squat",
+  "slug": "bb_back_squat",
+  "name": "Squat med stang",
+  "machine_type_slug": "power_rack",
+  "machine_category": "multi",
+  "movement_pattern": "squat",
+  "primary_muscles": [
+   "quads",
+   "glutes"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 6,
+  "default_rep_max": 10
+ },
+ {
+  "id": "bb_bench_press",
+  "slug": "bb_bench_press",
+  "name": "Bænkpres med stang",
+  "machine_type_slug": "power_rack",
+  "machine_category": "multi",
+  "movement_pattern": "push_horizontal",
+  "primary_muscles": [
+   "chest"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 6,
+  "default_rep_max": 10
+ },
+ {
+  "id": "bb_romanian_deadlift",
+  "slug": "bb_romanian_deadlift",
+  "name": "Rumænsk dødløft med stang",
+  "machine_type_slug": "barbell",
+  "machine_category": "free_weight",
+  "movement_pattern": "hinge",
+  "primary_muscles": [
+   "hamstrings",
+   "glutes"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 6,
+  "default_rep_max": 10
+ },
+ {
+  "id": "cable_biceps_curl",
+  "slug": "cable_biceps_curl",
+  "name": "Bicepscurl i kabel",
+  "machine_type_slug": "cable_station",
+  "machine_category": "multi",
+  "movement_pattern": "elbow_flexion",
+  "primary_muscles": [
+   "biceps"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "cable_face_pull",
+  "slug": "cable_face_pull",
+  "name": "Face pull",
+  "machine_type_slug": "cable_station",
+  "machine_category": "multi",
+  "movement_pattern": "pull_horizontal",
+  "primary_muscles": [
+   "rear_delts",
+   "upper_back"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 12,
+  "default_rep_max": 15
+ },
+ {
+  "id": "cable_fly",
+  "slug": "cable_fly",
+  "name": "Kabelflyes",
+  "machine_type_slug": "cable_station",
+  "machine_category": "multi",
+  "movement_pattern": "chest_fly",
+  "primary_muscles": [
+   "chest"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "cable_pallof_press",
+  "slug": "cable_pallof_press",
+  "name": "Pallof press",
+  "machine_type_slug": "cable_station",
+  "machine_category": "multi",
+  "movement_pattern": "core_anti_rotation",
+  "primary_muscles": [
+   "obliques",
+   "abs"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 12
+ },
+ {
+  "id": "cable_row",
+  "slug": "cable_row",
+  "name": "Siddende kabelroning",
+  "machine_type_slug": "cable_station",
+  "machine_category": "multi",
+  "movement_pattern": "pull_horizontal",
+  "primary_muscles": [
+   "upper_back",
+   "lats"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "cable_triceps_pushdown",
+  "slug": "cable_triceps_pushdown",
+  "name": "Triceps pushdown i kabel",
+  "machine_type_slug": "cable_station",
+  "machine_category": "multi",
+  "movement_pattern": "elbow_extension",
+  "primary_muscles": [
+   "triceps"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "db_bench_press",
+  "slug": "db_bench_press",
+  "name": "Bænkpres med håndvægte",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "push_horizontal",
+  "primary_muscles": [
+   "chest"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "db_biceps_curl",
+  "slug": "db_biceps_curl",
+  "name": "Bicepscurl med håndvægte",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "elbow_flexion",
+  "primary_muscles": [
+   "biceps"
+  ],
+  "is_free_weight": true,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "db_goblet_squat",
+  "slug": "db_goblet_squat",
+  "name": "Goblet squat",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "squat",
+  "primary_muscles": [
+   "quads",
+   "glutes"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "db_lateral_raise",
+  "slug": "db_lateral_raise",
+  "name": "Sidehæv med håndvægte",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "lateral_raise",
+  "primary_muscles": [
+   "side_delts"
+  ],
+  "is_free_weight": true,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "db_romanian_deadlift",
+  "slug": "db_romanian_deadlift",
+  "name": "Rumænsk dødløft med håndvægte",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "hinge",
+  "primary_muscles": [
+   "hamstrings",
+   "glutes"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "db_row",
+  "slug": "db_row",
+  "name": "Etarms-roning med håndvægt",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "pull_horizontal",
+  "primary_muscles": [
+   "upper_back",
+   "lats"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "db_shoulder_press",
+  "slug": "db_shoulder_press",
+  "name": "Skulderpres med håndvægte",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "push_vertical",
+  "primary_muscles": [
+   "front_delts"
+  ],
+  "is_free_weight": true,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "db_split_squat",
+  "slug": "db_split_squat",
+  "name": "Split squat med håndvægte",
+  "machine_type_slug": "dumbbells",
+  "machine_category": "free_weight",
+  "movement_pattern": "lunge",
+  "primary_muscles": [
+   "quads",
+   "glutes"
+  ],
+  "is_free_weight": true,
+  "default_sets": 2,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "dip_station_dip",
+  "slug": "dip_station_dip",
+  "name": "Dips",
+  "machine_type_slug": "dip_station",
+  "machine_category": "accessory",
+  "movement_pattern": "dip",
+  "primary_muscles": [
+   "triceps",
+   "chest"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 5,
+  "default_rep_max": 10
+ },
+ {
+  "id": "machine_ab_crunch",
+  "slug": "machine_ab_crunch",
+  "name": "Mavecrunch i maskine",
+  "machine_type_slug": "ab_crunch_machine",
+  "machine_category": "machine",
+  "movement_pattern": "core_flexion",
+  "primary_muscles": [
+   "abs"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_assisted_dip",
+  "slug": "machine_assisted_dip",
+  "name": "Assisteret dips",
+  "machine_type_slug": "assisted_pullup",
+  "machine_category": "machine",
+  "movement_pattern": "dip",
+  "primary_muscles": [
+   "triceps",
+   "chest"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 6,
+  "default_rep_max": 10
+ },
+ {
+  "id": "machine_assisted_pullup",
+  "slug": "machine_assisted_pullup",
+  "name": "Assisteret pull-up",
+  "machine_type_slug": "assisted_pullup",
+  "machine_category": "machine",
+  "movement_pattern": "pull_vertical",
+  "primary_muscles": [
+   "lats"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 6,
+  "default_rep_max": 10
+ },
+ {
+  "id": "machine_biceps_curl",
+  "slug": "machine_biceps_curl",
+  "name": "Bicepscurl i maskine",
+  "machine_type_slug": "biceps_curl_machine",
+  "machine_category": "machine",
+  "movement_pattern": "elbow_flexion",
+  "primary_muscles": [
+   "biceps"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_calf_raise",
+  "slug": "machine_calf_raise",
+  "name": "Tåhævninger i maskine",
+  "machine_type_slug": "calf_raise_machine",
+  "machine_category": "machine",
+  "movement_pattern": "calf_raise",
+  "primary_muscles": [
+   "calves"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_chest_fly",
+  "slug": "machine_chest_fly",
+  "name": "Butterfly i maskine",
+  "machine_type_slug": "pec_deck",
+  "machine_category": "machine",
+  "movement_pattern": "chest_fly",
+  "primary_muscles": [
+   "chest"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_chest_press",
+  "slug": "machine_chest_press",
+  "name": "Brystpres i maskine",
+  "machine_type_slug": "chest_press",
+  "machine_category": "machine",
+  "movement_pattern": "push_horizontal",
+  "primary_muscles": [
+   "chest"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "machine_hack_squat",
+  "slug": "machine_hack_squat",
+  "name": "Hack squat",
+  "machine_type_slug": "hack_squat",
+  "machine_category": "machine",
+  "movement_pattern": "squat",
+  "primary_muscles": [
+   "quads",
+   "glutes"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "machine_hip_abduction",
+  "slug": "machine_hip_abduction",
+  "name": "Abduktion i maskine",
+  "machine_type_slug": "hip_abduction",
+  "machine_category": "machine",
+  "movement_pattern": "hip_abduction",
+  "primary_muscles": [
+   "abductors",
+   "glutes"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 12,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_hip_adduction",
+  "slug": "machine_hip_adduction",
+  "name": "Adduktion i maskine",
+  "machine_type_slug": "hip_adduction",
+  "machine_category": "machine",
+  "movement_pattern": "hip_adduction",
+  "primary_muscles": [
+   "adductors"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 12,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_hip_thrust",
+  "slug": "machine_hip_thrust",
+  "name": "Hip thrust i maskine",
+  "machine_type_slug": "hip_thrust_machine",
+  "machine_category": "machine",
+  "movement_pattern": "hip_extension",
+  "primary_muscles": [
+   "glutes"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "machine_lat_pulldown",
+  "slug": "machine_lat_pulldown",
+  "name": "Lat pulldown",
+  "machine_type_slug": "lat_pulldown",
+  "machine_category": "machine",
+  "movement_pattern": "pull_vertical",
+  "primary_muscles": [
+   "lats"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "machine_lateral_raise",
+  "slug": "machine_lateral_raise",
+  "name": "Sidehæv i maskine",
+  "machine_type_slug": "lateral_raise_machine",
+  "machine_category": "machine",
+  "movement_pattern": "lateral_raise",
+  "primary_muscles": [
+   "side_delts"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_leg_extension",
+  "slug": "machine_leg_extension",
+  "name": "Benstræk",
+  "machine_type_slug": "leg_extension",
+  "machine_category": "machine",
+  "movement_pattern": "knee_extension",
+  "primary_muscles": [
+   "quads"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_leg_press",
+  "slug": "machine_leg_press",
+  "name": "Benpres",
+  "machine_type_slug": "leg_press",
+  "machine_category": "machine",
+  "movement_pattern": "squat",
+  "primary_muscles": [
+   "quads",
+   "glutes"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "machine_lying_leg_curl",
+  "slug": "machine_lying_leg_curl",
+  "name": "Liggende lårcurl",
+  "machine_type_slug": "lying_leg_curl",
+  "machine_category": "machine",
+  "movement_pattern": "knee_flexion",
+  "primary_muscles": [
+   "hamstrings"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_reverse_fly",
+  "slug": "machine_reverse_fly",
+  "name": "Reverse butterfly",
+  "machine_type_slug": "rear_delt_machine",
+  "machine_category": "machine",
+  "movement_pattern": "rear_delt_fly",
+  "primary_muscles": [
+   "rear_delts"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_reverse_fly_pec",
+  "slug": "machine_reverse_fly_pec",
+  "name": "Reverse butterfly i pec deck",
+  "machine_type_slug": "pec_deck",
+  "machine_category": "machine",
+  "movement_pattern": "rear_delt_fly",
+  "primary_muscles": [
+   "rear_delts"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_seated_leg_curl",
+  "slug": "machine_seated_leg_curl",
+  "name": "Siddende lårcurl",
+  "machine_type_slug": "seated_leg_curl",
+  "machine_category": "machine",
+  "movement_pattern": "knee_flexion",
+  "primary_muscles": [
+   "hamstrings"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "machine_seated_row",
+  "slug": "machine_seated_row",
+  "name": "Siddende roning i maskine",
+  "machine_type_slug": "seated_row",
+  "machine_category": "machine",
+  "movement_pattern": "pull_horizontal",
+  "primary_muscles": [
+   "upper_back",
+   "lats"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "machine_shoulder_press",
+  "slug": "machine_shoulder_press",
+  "name": "Skulderpres i maskine",
+  "machine_type_slug": "shoulder_press",
+  "machine_category": "machine",
+  "movement_pattern": "push_vertical",
+  "primary_muscles": [
+   "front_delts"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "machine_triceps_ext",
+  "slug": "machine_triceps_ext",
+  "name": "Tricepsekstension i maskine",
+  "machine_type_slug": "triceps_extension_machine",
+  "machine_category": "machine",
+  "movement_pattern": "elbow_extension",
+  "primary_muscles": [
+   "triceps"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "mat_dead_bug",
+  "slug": "mat_dead_bug",
+  "name": "Dead bug",
+  "machine_type_slug": "mat",
+  "machine_category": "accessory",
+  "movement_pattern": "core_anti_extension",
+  "primary_muscles": [
+   "abs"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "mat_glute_bridge",
+  "slug": "mat_glute_bridge",
+  "name": "Glute bridge",
+  "machine_type_slug": "mat",
+  "machine_category": "accessory",
+  "movement_pattern": "hip_extension",
+  "primary_muscles": [
+   "glutes"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 10,
+  "default_rep_max": 15
+ },
+ {
+  "id": "mat_plank",
+  "slug": "mat_plank",
+  "name": "Planke",
+  "machine_type_slug": "mat",
+  "machine_category": "accessory",
+  "movement_pattern": "core_anti_extension",
+  "primary_muscles": [
+   "abs"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 20,
+  "default_rep_max": 40
+ },
+ {
+  "id": "mat_side_plank",
+  "slug": "mat_side_plank",
+  "name": "Sideplanke",
+  "machine_type_slug": "mat",
+  "machine_category": "accessory",
+  "movement_pattern": "core_anti_lateral",
+  "primary_muscles": [
+   "obliques"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 15,
+  "default_rep_max": 30
+ },
+ {
+  "id": "smith_bench_press",
+  "slug": "smith_bench_press",
+  "name": "Bænkpres i Smith-maskine",
+  "machine_type_slug": "smith_machine",
+  "machine_category": "multi",
+  "movement_pattern": "push_horizontal",
+  "primary_muscles": [
+   "chest"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ },
+ {
+  "id": "smith_squat",
+  "slug": "smith_squat",
+  "name": "Squat i Smith-maskine",
+  "machine_type_slug": "smith_machine",
+  "machine_category": "multi",
+  "movement_pattern": "squat",
+  "primary_muscles": [
+   "quads",
+   "glutes"
+  ],
+  "is_free_weight": false,
+  "default_sets": 3,
+  "default_rep_min": 8,
+  "default_rep_max": 12
+ }
+]
