@@ -41,6 +41,7 @@ export const da = {
     emailPlaceholder: "dig@eksempel.dk",
     sendLink: "Send login-link",
     sending: "Sender…",
+    verifying: "Sikkerhedstjek…",
     or: "eller",
     google: "Fortsæt med Google",
     sentTitle: "Tjek din e-mail",
@@ -54,6 +55,8 @@ export const da = {
       generic: "Noget gik galt. Prøv igen om lidt.",
       rateLimited: "For mange forsøg. Vent et minut og prøv igen.",
       callback: "Login-linket virkede ikke eller er udløbet. Prøv igen.",
+      captcha: "Sikkerhedstjekket fejlede. Prøv igen om et øjeblik.",
+      captchaLoad: "Sikkerhedstjekket kunne ikke indlæses. Tjek forbindelsen, eller log ind med Google.",
     },
   },
   nav: {

@@ -86,6 +86,12 @@ export default function PrivatlivPage() {
           <strong>Google</strong> håndterer selve login-trinnet, hvis du vælger
           at logge ind med Google.
         </li>
+        <li>
+          <strong>Cloudflare</strong> (Turnstile) beskytter login-formularen mod
+          misbrug fra robotter. Når du åbner login-siden, modtager Cloudflare
+          tekniske oplysninger om din browser og din IP-adresse til det formål.
+          Oplysningerne bruges ikke til markedsføring.
+        </li>
       </ul>
       <p>
         Nogle af leverandørerne er amerikanske virksomheder. Hvis oplysninger
