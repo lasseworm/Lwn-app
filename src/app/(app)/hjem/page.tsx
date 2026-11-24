@@ -23,7 +23,7 @@ export default async function HomePage() {
   return (
     <main className="space-y-5">
       <header className="flex items-center justify-between">
-        <Logo className="text-2xl" />
+        <Logo className="h-10" eager />
         <form action={signOut}>
           <button type="submit" className="min-h-11 rounded-xl px-3 text-sm font-semibold text-muted hover:text-foreground">
             {t.home.signOut}
