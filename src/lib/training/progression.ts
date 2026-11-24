@@ -24,7 +24,12 @@ export const PROGRESSION_CONFIG = {
   fallbackStepKg: 2.5,
 };
 
-export type LoadType = "weighted" | "bodyweight";
+/**
+ * weighted   – almindelig vægt: progression = mere vægt
+ * bodyweight – kropsvægt: kun reps
+ * assisted   – assisteret maskine (fx pull-up): vægten er HJÆLP, så progression = mindre vægt
+ */
+export type LoadType = "weighted" | "bodyweight" | "assisted";
 
 export type PlanTarget = { sets: number; repMin: number; repMax: number };
 
@@ -87,8 +92,8 @@ export function prescribe(
   const sets = plan.sets;
   const base = { sets, fromHold: false, pause: null as Prescription["pause"] };
 
-  if (!state || (load === "weighted" && state.current_weight_kg == null)) {
-    return { ...base, weight: null, reps: plan.repMin, needsStartWeight: load === "weighted" };
+  if (!state || (load !== "bodyweight" && state.current_weight_kg == null)) {
+    return { ...base, weight: null, reps: plan.repMin, needsStartWeight: load !== "bodyweight" };
   }
 
   const useHold = !!state.hold_level && state.last_successful_reps != null;
@@ -101,7 +106,11 @@ export function prescribe(
     const days = daysBetween(state.last_performed_at, now);
     if (days > PROGRESSION_CONFIG.pauseDays) {
       let suggestedWeight: number | null = null;
-      if (weight != null) {
+      if (weight != null && load === "assisted") {
+        // Assisteret: lettere start = mere hjælp = ét trin mere vægt
+        const up = nextValidWeight(weight, effectiveSettings(settings));
+        suggestedWeight = up;
+      } else if (weight != null) {
         const eff = effectiveSettings(settings);
         suggestedWeight = nearestValidWeight(weight * PROGRESSION_CONFIG.pauseFactor, eff);
         // Forslaget skal være lettere end før; ellers ét trin ned, hvis muligt
@@ -146,14 +155,18 @@ export function evaluate(
 
   // Laveste vægt brugt i et fuldført sæt (konservativt)
   const weights = done.map((s) => s.weight).filter((w): w is number => w != null);
-  const usedWeight = load === "bodyweight" || weights.length === 0 ? null : roundKg(Math.min(...weights));
+  // Konservativt: laveste vægt – men for assisteret er MEST hjælp det letteste
+  const usedWeight =
+    load === "bodyweight" || weights.length === 0
+      ? null
+      : roundKg(load === "assisted" ? Math.max(...weights) : Math.min(...weights));
   const minReps = done.length ? Math.min(...done.map((s) => s.reps)) : 0;
 
   // Første gang: startvægten bliver baseline og nuværende niveau
-  if (load === "weighted" && prev.baseline_weight_kg == null && usedWeight != null) {
+  if (load !== "bodyweight" && prev.baseline_weight_kg == null && usedWeight != null) {
     prev.baseline_weight_kg = usedWeight;
   }
-  if (prev.current_weight_kg == null && load === "weighted") prev.current_weight_kg = usedWeight;
+  if (prev.current_weight_kg == null && load !== "bodyweight") prev.current_weight_kg = usedWeight;
   if (prev.current_reps == null) prev.current_reps = prescribed.reps;
   if (prev.current_sets == null) prev.current_sets = plan.sets;
 
@@ -174,7 +187,11 @@ export function evaluate(
   const targetWeight = prescribed.weight;
   const allSets = done.length >= prescribed.sets;
   const repsOk = minReps >= prescribed.reps;
-  const weightOk = load === "bodyweight" || targetWeight == null || (usedWeight != null && usedWeight >= roundKg(targetWeight));
+  const weightOk =
+    load === "bodyweight" ||
+    targetWeight == null ||
+    (usedWeight != null &&
+      (load === "assisted" ? usedWeight <= roundKg(targetWeight) : usedWeight >= roundKg(targetWeight)));
   const success = allSets && repsOk && weightOk;
 
   if (!success) {
@@ -197,12 +214,16 @@ export function evaluate(
       next.current_weight_kg = null;
       next.current_reps = plan.repMax; // kropsvægt: bliv på toppen (sværere variant kommer senere)
     } else {
-      const up = nextValidWeight(levelWeight, effectiveSettings(settings));
-      if (up != null) {
-        next.current_weight_kg = up;
+      const eff = effectiveSettings(settings);
+      const nextW =
+        load === "assisted"
+          ? (validWeights(eff).filter((w) => w < levelWeight - 1e-9).at(-1) ?? null) // mindre hjælp
+          : nextValidWeight(levelWeight, eff);
+      if (nextW != null) {
+        next.current_weight_kg = nextW;
         next.current_reps = plan.repMin;
       } else {
-        // Øverste plade nået: bliv på max
+        // Øverste plade (eller mindste hjælp) nået: bliv dér
         next.current_weight_kg = levelWeight;
         next.current_reps = plan.repMax;
       }

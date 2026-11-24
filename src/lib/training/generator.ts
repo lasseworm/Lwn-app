@@ -17,6 +17,13 @@
 
 export type Experience = "beginner" | "returning" | "intermediate";
 
+/** Hvordan vægten skal forstås for progression */
+export function loadTypeFor(machineTypeSlug: string, machineCategory: string, hasWeightStep: boolean): "weighted" | "bodyweight" | "assisted" {
+  if (machineTypeSlug === "assisted_pullup") return "assisted";
+  if (machineCategory === "accessory" && !hasWeightStep) return "bodyweight";
+  return "weighted";
+}
+
 export type CatalogExercise = {
   id: string;
   slug: string;
@@ -120,6 +127,8 @@ const LOWER: Slot[][] = [
 /** Lavere tal = foretrukket. Maskiner først, frie vægte sidst. */
 function tier(e: CatalogExercise): number {
   if (e.is_free_weight) return 3;
+  // Assisteret maskine er god, men almindelig maskine (fx lat pulldown) foretrækkes
+  if (e.machine_type_slug === "assisted_pullup") return 1;
   if (e.machine_category === "machine") return 0;
   if (e.machine_category === "multi") return 1;
   return 2; // kropsvægt/standardudstyr

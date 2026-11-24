@@ -167,6 +167,13 @@ describe("generateProgram – variation og præferencer", () => {
     expect(p.days[0].exercises.find((e) => e.slot === "push_h")!.exercise_id).toBe("machine_chest_press");
   });
 
+  it("assisteret pull-up vælges ikke, når lat pulldown findes", () => {
+    const p = generateProgram({ sessionsPerWeek: 3, experience: "beginner", catalog, equipment: [...MACHINE_GYM, ...gym("assisted_pullup")] });
+    expect(p.days[0].exercises.find((e) => e.slot === "pull_v")!.exercise_id).toBe("machine_lat_pulldown");
+    const only = generateProgram({ sessionsPerWeek: 2, experience: "beginner", catalog, equipment: gym("assisted_pullup") });
+    expect(allExercises(only).some((e) => e.exercise_id === "machine_assisted_pullup")).toBe(true);
+  });
+
   it("let øvede får mindst 3 sæt", () => {
     const p = generateProgram({ sessionsPerWeek: 3, experience: "intermediate", catalog, equipment: MACHINE_GYM });
     expect(allExercises(p).every((e) => e.sets >= 3)).toBe(true);

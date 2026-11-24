@@ -199,6 +199,37 @@ describe("evaluate – smerte", () => {
   });
 });
 
+describe("assisteret maskine (vægt = hjælp)", () => {
+  const assist = { weight_step_kg: 7, extra_plate_kg: null, min_weight_kg: 7, max_weight_kg: 70 };
+
+  it("første gang kræver valg af hjælp (startvægt)", () => {
+    expect(prescribe(null, plan, "assisted", assist, NOW).needsStartWeight).toBe(true);
+  });
+
+  it("rep_max i alle sæt: MINDRE hjælp næste gang", () => {
+    const s = state({ current_weight_kg: 35, current_reps: 12 });
+    const next = evaluate(s, prescribe(s, plan, "assisted", assist, NOW), plan, "assisted", assist, sets(3, 35, 12));
+    expect(next).toMatchObject({ current_weight_kg: 28, current_reps: 8 });
+  });
+
+  it("mere hjælp end målet tæller ikke som succes", () => {
+    const s = state({ current_weight_kg: 28, current_reps: 10 });
+    const next = evaluate(s, prescribe(s, plan, "assisted", assist, NOW), plan, "assisted", assist, sets(3, 35, 12));
+    expect(next).toMatchObject({ current_weight_kg: 28, current_reps: 10 });
+  });
+
+  it("mindst mulige hjælp nået: bliv dér", () => {
+    const s = state({ current_weight_kg: 7, current_reps: 12 });
+    const next = evaluate(s, prescribe(s, plan, "assisted", assist, NOW), plan, "assisted", assist, sets(3, 7, 12));
+    expect(next).toMatchObject({ current_weight_kg: 7, current_reps: 12 });
+  });
+
+  it("pause: lettere start = ét trin MERE hjælp", () => {
+    const s = state({ current_weight_kg: 28, current_reps: 9, last_performed_at: daysAgo(30) });
+    expect(prescribe(s, plan, "assisted", assist, NOW).pause?.suggestedWeight).toBe(35);
+  });
+});
+
 describe("hjælpere", () => {
   it("opvarmning: lettere gyldige vægte", () => {
     expect(warmupSets(35, stack)).toEqual([
