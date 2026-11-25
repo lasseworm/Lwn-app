@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { supabaseEnv } from "./env";
 
 /** Stier der kan ses uden login. Alt andet kræver login. */
-const PUBLIC_PATHS = ["/", "/login", "/privatliv"];
+const PUBLIC_PATHS = ["/", "/login", "/privatliv", "/api/stripe/webhook"];
 const PUBLIC_PREFIXES = ["/auth/"];
 
 function isPublic(pathname: string) {
@@ -70,7 +70,7 @@ export async function updateSession(request: NextRequest) {
     return redirect;
   };
 
-  if (!user && pathname.startsWith("/api/")) {
+  if (!user && pathname.startsWith("/api/") && !isPublic(pathname)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

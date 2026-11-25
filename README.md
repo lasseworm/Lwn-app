@@ -152,3 +152,24 @@ Uden site key i Vercel vises intet tjek, og login virker som før. Slår du det 
 
 - Katalog (39 maskintyper, 49 øvelser) ligger i en migration og er markeret `is_sample = true`. Det vises med et **Eksempel**-mærke og skal kvalitetssikres.
 - `supabase/seed.sql` opretter et demo-center (`is_sample = true`) – kun lokalt.
+
+---
+
+## LWN Pro (Stripe) og AI-kvoter
+
+- **Gratis:** centeropsætning med AI-genkendelse (30/md.), opstartsprogrammer (2/md.), logning.
+- **Pro (39 kr./md., 14 dages prøve):** flere genkendelser + AI-coach, AI-programmer og analyse (kommer).
+- Grænser står i tabellen `plan_limits` og kan ændres i Supabase uden kodeændring.
+- Hvert AI-kald gemmes i `ai_usage` (tokens pr. bruger og funktion).
+- Er kvoten brugt op, kan brugeren stadig vælge maskintype og vægttrin selv – gratis.
+
+**Filer:** `src/lib/stripe.ts` (Stripe REST + webhook-signatur, ingen ekstra pakke),
+`src/lib/ai/quota.ts`, `src/lib/supabase/admin.ts`, `src/app/(app)/pro/`,
+`src/app/api/stripe/webhook/route.ts`, `supabase/migrations/20261125000008_pro_billing.sql`.
+
+**Opsætning:**
+1. Udfyld de nye variabler fra `.env.example` i Vercel (Production og Preview).
+2. Stripe → Developers → Webhooks → endpoint `https://lwn.dk/api/stripe/webhook` med hændelserne
+   `checkout.session.completed`, `customer.subscription.created/updated/deleted`, `invoice.paid`, `invoice.payment_failed`.
+3. Stripe → Billing → Revenue recovery: slå Smart Retries og mails ved fejlet betaling til.
+4. Test med kort `4242 4242 4242 4242` i sandbox.

@@ -50,7 +50,13 @@ function logUsage(kind: string, usage: Anthropic.Usage) {
 // Genkendelse af maskintype
 // ---------------------------------------------------------------------------
 
-export async function recognizeEquipment(img: ImageInput, catalog: CatalogEntry[]): Promise<EquipmentRecognition> {
+export type UsageCallback = (usage: { input_tokens: number; output_tokens: number }) => void;
+
+export async function recognizeEquipment(
+  img: ImageInput,
+  catalog: CatalogEntry[],
+  onUsage?: UsageCallback,
+): Promise<EquipmentRecognition> {
   const slugs = catalog.map((c) => c.slug) as [string, ...string[]];
   const schema = z.object({
     is_equipment: z.boolean(),
@@ -87,6 +93,7 @@ export async function recognizeEquipment(img: ImageInput, catalog: CatalogEntry[
   });
 
   logUsage("equipment", response.usage);
+  onUsage?.(response.usage);
   if (response.stop_reason === "refusal") throw new AiRefusedError("refusal");
   const out = response.parsed_output;
   if (!out) throw new Error(`AI-svar kunne ikke læses (stop_reason=${response.stop_reason})`);
@@ -120,7 +127,7 @@ const stackSchema = z.object({
 const positiveOrNull = (n: number | null, max: number) =>
   n != null && Number.isFinite(n) && n > 0 && n <= max ? Math.round(n * 100) / 100 : null;
 
-export async function readWeightStack(img: ImageInput): Promise<WeightStackReading> {
+export async function readWeightStack(img: ImageInput, onUsage?: UsageCallback): Promise<WeightStackReading> {
   const response = await getClient().messages.parse({
     model: aiModel(),
     max_tokens: 4000,
@@ -143,6 +150,7 @@ export async function readWeightStack(img: ImageInput): Promise<WeightStackReadi
   });
 
   logUsage("weight-stack", response.usage);
+  onUsage?.(response.usage);
   if (response.stop_reason === "refusal") throw new AiRefusedError("refusal");
   const out = response.parsed_output;
   if (!out) throw new Error(`AI-svar kunne ikke læses (stop_reason=${response.stop_reason})`);

@@ -140,7 +140,7 @@ export function AddEquipmentWizard({
         return;
       }
       if (!data.result) {
-        setNotice(t.equipment.aiFailed);
+        setNotice(data.quota === "exceeded" ? t.equipment.aiQuota : t.equipment.aiFailed);
         setShowList(true);
         setStep("type");
         return;
@@ -205,7 +205,9 @@ export function AddEquipmentWizard({
       });
       const data = await res.json();
       if (data.rejected) return setStackNotice(t.equipment.scanRejected);
-      if (!data.result) return setStackNotice(t.equipment.scanFailed);
+      if (!data.result) {
+        return setStackNotice(data.quota === "exceeded" ? t.equipment.scanQuota : t.equipment.scanFailed);
+      }
       const r = data.result as { step_kg: number | null; extra_plate_kg: number | null; min_kg: number | null; max_kg: number | null };
       const s = (n: number | null) => (n == null ? "" : String(n).replace(".", ","));
       if (r.step_kg != null) setStepKg(s(r.step_kg));
