@@ -3,8 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card, inputClass } from "@/components/ui";
-import { createClient } from "@/lib/supabase/client";
-import { compressImage } from "@/lib/image";
+import { uploadEquipmentPhoto as uploadPhoto } from "@/lib/equipment/upload-photo";
 import { validWeights } from "@/lib/equipment/weights";
 import { muscleName, t } from "@/i18n";
 import { addEquipment, discardPhoto, pickExistingEquipment } from "../actions";
@@ -30,7 +29,6 @@ type Suggestion = { slug: string | null; confidence: number; alternatives: strin
 
 type Step = "photo" | "type" | "duplicate" | "details";
 
-const BUCKET = "equipment-photos";
 const CATEGORY_ORDER = ["machine", "multi", "free_weight", "accessory", "cardio"];
 const COMMON_STEPS = [2.5, 3.5, 4.5, 5, 7, 10];
 const CONFIDENT = 0.6;
@@ -43,17 +41,6 @@ const parseKg = (s: string) => {
   return s.trim() && Number.isFinite(v) ? v : null;
 };
 const fmtKg = (n: number) => n.toLocaleString("da-DK", { maximumFractionDigits: 2 });
-
-async function uploadPhoto(gymId: string, file: File): Promise<string> {
-  const blob = await compressImage(file);
-  const path = `${gymId}/${crypto.randomUUID()}.jpg`;
-  const { error } = await createClient().storage.from(BUCKET).upload(path, blob, {
-    contentType: "image/jpeg",
-    upsert: false,
-  });
-  if (error) throw error;
-  return path;
-}
 
 export function AddEquipmentWizard({
   gymId,

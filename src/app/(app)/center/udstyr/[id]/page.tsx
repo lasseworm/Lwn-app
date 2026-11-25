@@ -8,6 +8,7 @@ import { validWeights } from "@/lib/equipment/weights";
 import { muscleName, t } from "@/i18n";
 import { confirmEquipment, reportEquipment, setEquipmentRemoved } from "../../actions";
 import { EditWeightsForm } from "./edit-weights-form";
+import { PhotoControls } from "./photo-controls";
 import { ConfirmSubmit } from "@/components/confirm-submit";
 
 export const metadata: Metadata = { title: t.gym.title };
@@ -50,6 +51,8 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
   const removed = status === "removed";
   // Kun andre end den, der tilføjede maskinen, kan bekræfte den
   const addedByMe = e.added_by === user.id;
+  // Eget foto kan skiftes/drejes; mangler maskinen et foto, kan alle tilføje et
+  const canChangePhoto = !removed && !!e.gym_id && (addedByMe || !e.photo_path);
   const canConfirm = !removed && !addedByMe && myVote?.vote !== "confirm";
   const weights = validWeights(e);
 
@@ -72,9 +75,14 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
         </div>
       )}
 
-      {photoUrl && (
-        // eslint-disable-next-line @next/next/no-img-element -- signeret URL, udløber efter 1 time
-        <img src={photoUrl} alt={mt?.name ?? ""} className="aspect-[4/3] w-full rounded-3xl object-cover" />
+      {(photoUrl || canChangePhoto) && (
+        <PhotoControls
+          equipmentId={e.id}
+          gymId={e.gym_id ?? ""}
+          photoUrl={photoUrl}
+          alt={mt?.name ?? ""}
+          canChange={canChangePhoto}
+        />
       )}
 
       <header>
