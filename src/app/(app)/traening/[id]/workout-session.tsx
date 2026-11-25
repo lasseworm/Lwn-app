@@ -281,9 +281,16 @@ export function WorkoutSession({
     });
   }
 
+  /** Til toppen, så man straks ser næste øvelse (respekterer "reducer bevægelse") */
+  const toTop = () => {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  };
+
   const go = (i: number) => {
     setNotice(null);
     setIndex(i);
+    toTop();
   };
 
   /** "Maskinen er optaget": flyt øvelsen bagerst blandt de øvelser, der mangler, og gå videre */
@@ -292,6 +299,7 @@ export function WorkoutSession({
     const othersOpen = state.some((s, i) => i !== index && isOpen(s));
     if (!othersOpen) {
       setNotice(t.workout.occupiedLast);
+      toTop();
       return;
     }
     setState((all) => {
@@ -300,6 +308,7 @@ export function WorkoutSession({
       return [...rest, moved];
     });
     setNotice(t.workout.occupiedMoved(opt.name));
+    toTop();
     // Samme indeks viser nu den næste øvelse; var det den sidste, gå til første åbne
     if (index >= state.length - 1) setIndex(state.findIndex((s, i) => i !== index && isOpen(s)));
   }
