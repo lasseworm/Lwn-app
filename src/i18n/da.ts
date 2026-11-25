@@ -301,6 +301,11 @@ export const da = {
       core: "mave/core",
     } as Record<string, string>,
   },
+  illustration: {
+    start: "Start",
+    end: "Slut",
+    caption: "Skitse af øvelsen: start- og slutposition.",
+  },
   workout: {
     machinePhoto: "Foto af maskinen i dit center",
     resume: "Fortsæt dit pas",

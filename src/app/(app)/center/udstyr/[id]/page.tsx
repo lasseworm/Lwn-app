@@ -9,6 +9,7 @@ import { muscleName, t } from "@/i18n";
 import { confirmEquipment, reportEquipment, setEquipmentRemoved } from "../../actions";
 import { EditWeightsForm } from "./edit-weights-form";
 import { PhotoControls } from "./photo-controls";
+import { ExerciseIllustration } from "@/components/exercise-illustration";
 import { ConfirmSubmit } from "@/components/confirm-submit";
 
 export const metadata: Metadata = { title: t.gym.title };
@@ -117,6 +118,7 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
               <li key={x.slug} className="py-3">
                 <span className="block text-base font-semibold">{x.name}</span>
                 <span className="block text-sm text-muted">{(x.primary_muscles ?? []).map(muscleName).join(", ")}</span>
+                <ExerciseIllustration slug={x.slug} className="mt-2 max-w-xs" />
               </li>
             ))}
           </ul>

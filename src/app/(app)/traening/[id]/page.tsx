@@ -70,6 +70,7 @@ export default async function WorkoutPage(props: PageProps<"/traening/[id]">) {
     if (!eq || eq.machine_type_slug !== ex.machine_type_slug) return null;
     return {
       exerciseId: ex.id,
+      slug: ex.slug,
       name: ex.name,
       machineTypeSlug: ex.machine_type_slug,
       movementPattern: ex.movement_pattern,
