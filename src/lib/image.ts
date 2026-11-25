@@ -4,18 +4,23 @@
  * - gemmer som JPEG (kvalitet 0,8)
  * - tegning via canvas fjerner ALLE metadata, inkl. EXIF og GPS-position
  */
-export async function compressImage(file: File, maxDim = 1280, quality = 0.8): Promise<Blob> {
+export async function compressImage(file: Blob, maxDim = 1280, quality = 0.8, quarterTurns = 0): Promise<Blob> {
   const bitmap = await loadBitmap(file);
   const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
   const w = Math.round(bitmap.width * scale);
   const h = Math.round(bitmap.height * scale);
+  const turns = ((quarterTurns % 4) + 4) % 4;
+  const sideways = turns % 2 === 1;
 
   const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
+  canvas.width = sideways ? h : w;
+  canvas.height = sideways ? w : h;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas understøttes ikke");
-  ctx.drawImage(bitmap, 0, 0, w, h);
+  // Drejer om midten (kvarte omgange med uret)
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate((turns * Math.PI) / 2);
+  ctx.drawImage(bitmap, -w / 2, -h / 2, w, h);
   if ("close" in bitmap) bitmap.close();
 
   return new Promise((resolve, reject) =>
@@ -23,7 +28,7 @@ export async function compressImage(file: File, maxDim = 1280, quality = 0.8): P
   );
 }
 
-async function loadBitmap(file: File): Promise<ImageBitmap | HTMLImageElement> {
+async function loadBitmap(file: Blob): Promise<ImageBitmap | HTMLImageElement> {
   if ("createImageBitmap" in window) {
     try {
       // Respekterer kameraets rotation, så billedet vender rigtigt.

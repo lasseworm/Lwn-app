@@ -148,6 +148,34 @@ export async function pickExistingEquipment(existingId: string, photoPath: strin
   return { ok: true, id: existingId };
 }
 
+/**
+ * Skifter (eller drejer) maskinens foto. Kun den, der tilføjede maskinen, må skifte et
+ * eksisterende foto; mangler maskinen et foto, må alle tilføje et. Det gamle foto slettes.
+ */
+export async function replaceEquipmentPhoto(equipmentId: string, photoPath: string): Promise<{ ok: boolean }> {
+  if (!isUuid(equipmentId) || !isValidPhotoPath(photoPath)) return { ok: false };
+  const { supabase, user } = await requireUser();
+  const { data: eq } = await supabase
+    .from("gym_equipment")
+    .select("gym_id, added_by, photo_path")
+    .eq("id", equipmentId)
+    .maybeSingle();
+  const allowed = !!eq && (eq.added_by === user.id || !eq.photo_path) && photoPath.startsWith(eq.gym_id + "/");
+  if (!allowed) {
+    await deletePhoto(supabase, photoPath);
+    return { ok: false };
+  }
+  const { error } = await supabase.from("gym_equipment").update({ photo_path: photoPath }).eq("id", equipmentId);
+  if (error) {
+    await deletePhoto(supabase, photoPath);
+    return { ok: false };
+  }
+  if (eq.photo_path && eq.photo_path !== photoPath) await deletePhoto(supabase, eq.photo_path);
+  revalidatePath(`/center/udstyr/${equipmentId}`);
+  revalidatePath("/center");
+  return { ok: true };
+}
+
 export async function discardPhoto(photoPath: string) {
   if (!isValidPhotoPath(photoPath)) return;
   const { supabase } = await requireUser();
