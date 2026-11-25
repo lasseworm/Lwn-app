@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, Dumbbell, House, LayoutGrid } from "lucide-react";
+import { ClipboardList, Dumbbell, House, TrendingUp, UserRound } from "lucide-react";
 import { t } from "@/i18n";
 
-// Flere punkter (Fremgang, Profil) tilføjes i de næste trin.
+// Maskinkatalog og Tips nås fra Hjem og Profil
 const items = [
   { href: "/hjem", label: t.nav.home, icon: House },
   { href: "/program", label: t.nav.program, icon: ClipboardList },
+  { href: "/fremgang", label: t.nav.progress, icon: TrendingUp },
   { href: "/center", label: t.nav.center, icon: Dumbbell },
-  { href: "/katalog", label: t.nav.catalog, icon: LayoutGrid },
+  { href: "/profil", label: t.nav.profile, icon: UserRound },
 ] as const;
 
 export function BottomNav() {

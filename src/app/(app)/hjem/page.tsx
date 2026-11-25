@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Button, ButtonLink, Card, Logo } from "@/components/ui";
 import { loadActiveProgram, nextProgramDay, openWorkout } from "@/lib/training/data";
-import { startWorkout } from "../program/actions";
+import { createProgram, startWorkout } from "../program/actions";
+import { snoozeReview } from "../profil/actions";
+import { shouldOfferProgramReview } from "@/lib/training/stats";
+import { tipOfTheDay } from "@/content/tips";
+import { ReviewForm } from "./review-form";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { t } from "@/i18n";
@@ -17,7 +21,7 @@ export default async function HomePage() {
   if (!user) redirect("/login");
 
   const [{ data: profile }, machineTypes, exercises] = await Promise.all([
-    supabase.from("profiles").select("display_name, experience_level, active_gym_id, gyms!profiles_active_gym_id_fkey(id, name, city)").eq("id", user.id).maybeSingle(),
+    supabase.from("profiles").select("display_name, experience_level, sessions_per_week, program_review_snoozed_until, active_gym_id, gyms!profiles_active_gym_id_fkey(id, name, city)").eq("id", user.id).maybeSingle(),
     supabase.from("machine_types").select("id", { count: "exact", head: true }),
     supabase.from("exercises").select("id", { count: "exact", head: true }),
   ]);
@@ -37,6 +41,26 @@ export default async function HomePage() {
   const next = program ? await nextProgramDay(supabase, user.id, program.days) : null;
   const onboarded = !!profile?.experience_level;
 
+  // 12-ugers-spørgsmålet (byggeplan 3.5)
+  const now = new Date();
+  let offerReview = false;
+  if (program?.generated_at) {
+    const { count } = await supabase
+      .from("workouts")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .not("finished_at", "is", null)
+      .gte("finished_at", program.generated_at);
+    offerReview = shouldOfferProgramReview({
+      programGeneratedAt: program.generated_at,
+      sessionsPerWeek: program.sessions_per_week ?? profile?.sessions_per_week ?? null,
+      finishedSinceProgram: count ?? 0,
+      snoozedUntil: profile?.program_review_snoozed_until ?? null,
+      now,
+    });
+  }
+  const tip = tipOfTheDay(now);
+
   return (
     <main className="space-y-5">
       <header className="flex items-center justify-between">
@@ -54,6 +78,21 @@ export default async function HomePage() {
           {t.home.signedInAs} {user.email}
         </p>
       </section>
+
+      {offerReview && (
+        <Card className="space-y-4 border-accent/60">
+          <div>
+            <h2 className="text-xl font-bold">{t.review.title}</h2>
+            <p className="mt-1 text-base">{t.review.text}</p>
+          </div>
+          <ReviewForm action={createProgram} sessions={program?.sessions_per_week ?? profile?.sessions_per_week ?? 3} />
+          <form action={snoozeReview}>
+            <button type="submit" className="min-h-11 w-full text-sm font-semibold text-muted underline underline-offset-2">
+              {t.review.snooze}
+            </button>
+          </form>
+        </Card>
+      )}
 
       <Card>
         <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">{t.home.nextUp}</h2>
@@ -119,6 +158,15 @@ export default async function HomePage() {
         <p className="mt-1 text-base text-muted">{t.pro.homeCard}</p>
         <ButtonLink href="/pro" variant="secondary" className="mt-5">
           {t.pro.homeButton}
+        </ButtonLink>
+      </Card>
+
+      <Card>
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">{t.tips.tipOfDay}</h2>
+        <p className="mt-2 text-xl font-bold">{tip.title}</p>
+        <p className="mt-1 text-base leading-relaxed">{tip.text}</p>
+        <ButtonLink href="/tips" variant="secondary" className="mt-5">
+          {t.tips.seeAll}
         </ButtonLink>
       </Card>
 

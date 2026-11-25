@@ -39,7 +39,8 @@ export async function saveProfile(_prev: FormState, formData: FormData): Promise
   }
 
   revalidatePath("/", "layout");
-  // Næste trin: center → udstyr → program
+  // Fra profilsiden: tilbage dertil. Fra onboarding: næste trin (center → udstyr → program)
+  if (formData.get("returnTo") === "/profil") redirect("/profil?gemt=1");
   redirect(profile.active_gym_id ? "/program" : "/center/find");
 }
 
@@ -71,6 +72,7 @@ export async function createProgram(_prev: GenerateState, formData: FormData): P
     catalog,
     equipment,
     preferences,
+    moreFreeWeights: formData.get("moreFreeWeights") === "on",
   });
 
   if (program.days.length === 0 || program.days.every((d) => d.exercises.length < 3)) {

@@ -11,10 +11,19 @@ const optionClass =
   "flex min-h-14 cursor-pointer items-center gap-4 rounded-2xl border border-border bg-surface px-4 py-3 has-[:checked]:border-accent has-[:checked]:bg-accent/10";
 const radioClass = "h-5 w-5 shrink-0 accent-[var(--accent)]";
 
-export function OnboardingForm({ defaults }: { defaults: Defaults }) {
+export function OnboardingForm({
+  defaults,
+  returnTo,
+  submitLabel = t.onboarding.save,
+}: {
+  defaults: Defaults;
+  returnTo?: string;
+  submitLabel?: string;
+}) {
   const [state, action, pending] = useActionState<FormState, FormData>(saveProfile, {});
   return (
     <form action={action} className="space-y-8">
+      {returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
       <fieldset className="space-y-3">
         <legend className="mb-3 text-lg font-bold">{t.onboarding.experienceQ}</legend>
         {Object.entries(t.onboarding.experience).map(([value, o]) => (
@@ -62,7 +71,7 @@ export function OnboardingForm({ defaults }: { defaults: Defaults }) {
         </p>
       )}
       <Button type="submit" disabled={pending}>
-        {t.onboarding.save}
+        {submitLabel}
       </Button>
     </form>
   );

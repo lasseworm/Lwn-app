@@ -4,7 +4,7 @@
 
 PWA bygget med Next.js 16 (App Router, TypeScript, Tailwind 4), Supabase (Postgres, Auth, Storage, RLS) og Serwist (service worker). Produktbeskrivelse og byggeplan: [`docs/LWN-samlet-prompt.md`](docs/LWN-samlet-prompt.md) og [`docs/LWN-byggeplan.md`](docs/LWN-byggeplan.md).
 
-**Status:** Trin 0–3 er færdige: fundament, login, database med RLS, startkatalog, centre og udstyr (foto, AI-forslag, vægttrin), onboarding, programgenerator, træningsskærm og automatisk progression.
+**Status:** Trin 0–4 er færdige: fundament, login, centre og udstyr, program, træning og progression, fremgang med grafer, tips, profil med eksport og sletning af data samt feedback.
 
 ---
 
@@ -75,6 +75,16 @@ Nulstil databasen (kører alle migrationer + `seed.sql` igen): `npm run db:reset
 - **Progression:** dobbelt progression (+1 rep, derefter næste gyldige vægttrin), og den sænker aldrig automatisk. "Progression virkede ikke" gentager sidste vellykkede niveau. Efter mere end 14 dages pause foreslås en lettere start. Smerte stopper øvelsen uden progression. Assisterede maskiner går den anden vej (mindre hjælp).
 - **Data går ikke tabt:** Hvert sæt gemmes med det samme. Et pas afsluttes, og progressionen gemmes, atomisk i databasen (`finish_workout`), og serveren genberegner progressionen selv.
 - Tærskler kan ændres i `PROGRESSION_CONFIG`. Evidensgrundlaget står i [`docs/evidens.md`](docs/evidens.md).
+
+## Fremgang, tips og profil (Trin 4)
+
+- **Fremgang** (`/fremgang`): 7 dage, 30 dage, 6 mdr. og 12 mdr., hver sammenlignet med perioden før. Nøgletal: pas, sæt, løftet i alt og regelmæssighed. Hertil rekorder (med "Ny"-mærke) og en graf pr. øvelse med tabelvisning. Beregningerne ligger i `src/lib/training/stats.ts` (med tests).
+- **Tips & tricks** (`/tips`): 10 korte tips i `src/content/tips.ts` (udkast). Dagens tip vises på Hjem.
+- **Profil** (`/profil`): ret oplysninger, se og fjern gemte alternativer, centre, links til Pro, tips, katalog og privatliv.
+  - **Eksportér mine data:** JSON-fil via `/api/export`.
+  - **Slet min konto:** databasefunktionen `delete_my_account()`. Et aktivt, ikke-opsagt Pro-abonnement blokerer sletningen.
+- **Feedback:** "Giv feedback" nederst på alle sider. Beskeden gemmes i tabellen `feedback` sammen med skærmen, den er skrevet fra.
+- **12-ugers-spørgsmålet:** Efter 12 uger med mindst 60 % af de planlagte pas tilbyder Hjem et opdateret program, eventuelt med flere frie vægte. Spørgsmålet kan udsættes 4 uger.
 
 ## AI-genkendelse og pris
 

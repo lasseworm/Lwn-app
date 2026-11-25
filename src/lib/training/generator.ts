@@ -52,6 +52,12 @@ export type GeneratorInput = {
   catalog: CatalogExercise[];
   equipment: GymEquipmentItem[];
   preferences?: Record<string, Preference>; // nøgle: original_exercise_id
+  /**
+   * 12-ugers-opdatering: "flere øvelser med frie vægte". De store flerledsøvelser
+   * (squat, pres, roning, hinge) vælges så med frie vægte, når udstyret findes.
+   * Isolation og core bliver på maskiner.
+   */
+  moreFreeWeights?: boolean;
 };
 
 export type PlannedExercise = {
@@ -136,7 +142,11 @@ function tier(e: CatalogExercise): number {
 
 const STATUS_RANK: Record<string, number> = { verified: 0, pending: 1, disputed: 2 };
 
+const COMPOUND = new Set(["squat", "lunge", "push_horizontal", "push_vertical", "pull_horizontal", "hinge"]);
+
 export function generateProgram(input: GeneratorInput): GeneratedProgram {
+  const rankOf = (e: CatalogExercise) =>
+    input.moreFreeWeights && e.is_free_weight && COMPOUND.has(e.movement_pattern ?? "") ? -1 : tier(e);
   const prefs = input.preferences ?? {};
   const usable = input.equipment.filter((e) => e.status !== "removed");
 
@@ -174,7 +184,7 @@ export function generateProgram(input: GeneratorInput): GeneratedProgram {
       const i = slot.patterns.indexOf(e.movement_pattern ?? "");
       return i === -1 ? slot.patterns.length : i;
     };
-    return out.sort((a, b) => tier(a) - tier(b) || rank(a) - rank(b) || a.slug.localeCompare(b.slug));
+    return out.sort((a, b) => rankOf(a) - rankOf(b) || rank(a) - rank(b) || a.slug.localeCompare(b.slug));
   };
 
   const setsFor = (e: CatalogExercise) => {
@@ -193,7 +203,7 @@ export function generateProgram(input: GeneratorInput): GeneratedProgram {
       const cands = candidatesFor(slot).filter((c) => !used.has(c.id));
       if (cands.length === 0) continue; // tving intet ind
       // Variation mellem dage: vælg en anden kandidat i samme (bedste) niveau, hvis der er flere
-      const best = cands.filter((c) => tier(c) === tier(cands[0]) && c.movement_pattern === cands[0].movement_pattern);
+      const best = cands.filter((c) => rankOf(c) === rankOf(cands[0]) && c.movement_pattern === cands[0].movement_pattern);
       const pick = best[variant % best.length];
       used.add(pick.id);
       const eq = equipmentByType.get(pick.machine_type_slug)!;
