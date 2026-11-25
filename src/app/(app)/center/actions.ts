@@ -237,14 +237,9 @@ export async function confirmEquipment(formData: FormData) {
   if (!isUuid(id)) return;
   const { supabase, user } = await requireUser();
 
-  // I testfasen må centrets opretter bekræfte alt; ellers kun andre end den, der tilføjede maskinen.
-  const { data: eq } = await supabase
-    .from("gym_equipment")
-    .select("added_by, gyms(created_by)")
-    .eq("id", id)
-    .maybeSingle();
-  const allowed = eq && (eq.added_by !== user.id || eq.gyms?.created_by === user.id);
-  if (!allowed) return;
+  // Kun andre end den, der tilføjede maskinen, kan bekræfte den (fællesskabsbekræftelse)
+  const { data: eq } = await supabase.from("gym_equipment").select("added_by").eq("id", id).maybeSingle();
+  if (!eq || eq.added_by === user.id) return;
 
   await supabase
     .from("equipment_confirmations")

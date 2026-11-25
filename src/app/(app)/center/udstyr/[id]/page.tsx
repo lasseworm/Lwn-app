@@ -45,7 +45,9 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
   const mt = e.machine_types;
   const status = e.status ?? "pending";
   const removed = status === "removed";
-  const canConfirm = !removed && (e.added_by !== user.id || e.gyms?.created_by === user.id) && myVote?.vote !== "confirm";
+  // Kun andre end den, der tilføjede maskinen, kan bekræfte den
+  const addedByMe = e.added_by === user.id;
+  const canConfirm = !removed && !addedByMe && myVote?.vote !== "confirm";
   const weights = validWeights(e);
 
   return (
@@ -118,7 +120,9 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
               <Button type="submit">{t.equipment.confirm}</Button>
             </form>
           ) : (
-            myVote?.vote === "confirm" && <p className="text-base text-muted">{t.equipment.confirmed}</p>
+            <p className="text-base text-muted">
+              {myVote?.vote === "confirm" ? t.equipment.confirmed : addedByMe && status === "pending" ? t.equipment.waitingForOthers : null}
+            </p>
           )}
           <details>
             <summary className="min-h-11 cursor-pointer content-center text-sm font-semibold underline underline-offset-2">
