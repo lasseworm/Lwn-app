@@ -267,8 +267,10 @@ export const tipsDa: Tip[] = [
   },
 ];
 
-/** Dagens tip: skifter én gang i døgnet, samme for alle */
-export function tipOfTheDay(date: Date, tips: Tip[] = tipsDa): Tip {
-  const day = Math.floor(date.getTime() / 86_400_000);
+/** Dagens tip: skifter ved midnat dansk tid og er det samme for alle medlemmer den dag */
+export function tipOfTheDay(date: Date, tips: Tip[] = tipsDa, timeZone = "Europe/Copenhagen"): Tip {
+  // Kalenderdato i Danmark (YYYY-MM-DD), uanset serverens tidszone
+  const ymd = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+  const day = Math.floor(Date.parse(`${ymd}T00:00:00Z`) / 86_400_000);
   return tips[day % tips.length];
 }

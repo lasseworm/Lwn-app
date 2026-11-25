@@ -6,6 +6,8 @@ import { createProgram, startWorkout } from "../program/actions";
 import { snoozeReview } from "../profil/actions";
 import { shouldOfferProgramReview } from "@/lib/training/stats";
 import { tipOfTheDay } from "@/content/tips";
+import Link from "next/link";
+import { Lightbulb } from "lucide-react";
 import { ReviewForm } from "./review-form";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
@@ -131,6 +133,18 @@ export default async function HomePage() {
         )}
       </Card>
 
+      <Card className="border-accent/40">
+        <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-muted">
+          <Lightbulb aria-hidden size={16} className="text-accent-text" />
+          {t.tips.tipOfDay}
+        </h2>
+        <p className="mt-2 text-xl font-bold">{tip.title}</p>
+        <p className="mt-1 text-base leading-relaxed">{tip.text}</p>
+        <Link href="/tips" className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-2">
+          {t.tips.seeAll}
+        </Link>
+      </Card>
+
       <Card>
         <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">{t.gym.title}</h2>
         {gym ? (
@@ -161,14 +175,6 @@ export default async function HomePage() {
         </ButtonLink>
       </Card>
 
-      <Card>
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted">{t.tips.tipOfDay}</h2>
-        <p className="mt-2 text-xl font-bold">{tip.title}</p>
-        <p className="mt-1 text-base leading-relaxed">{tip.text}</p>
-        <ButtonLink href="/tips" variant="secondary" className="mt-5">
-          {t.tips.seeAll}
-        </ButtonLink>
-      </Card>
 
       <Card>
         <h2 className="text-lg font-bold">{t.home.catalogCard}</h2>
