@@ -8,6 +8,9 @@
  * - Øvelser springes over, hvis udstyret mangler – intet tvinges ind
  * - Multifunktionsudstyr (kabel, Smith, håndvægte …) bidrager via øvelseskataloget
  * - Brugerens udeladelser og foretrukne alternativer respekteres
+ * - Nybegyndere får ikke øvelser markeret som for avancerede (beginner_friendly = false)
+ * - Mave/core laves helst på gulvet med måtte
+ * - Højst én bicepsøvelse om ugen (træningen af ryggen rammer også biceps): kun i fuld krop A og overkrop A
  *
  * Volumen og rep-intervaller kommer fra katalogets standardværdier (nybegynder: 2–3 sæt × 8–15).
  * Referencer: docs/evidens.md
@@ -36,6 +39,8 @@ export type CatalogExercise = {
   default_sets: number;
   default_rep_min: number;
   default_rep_max: number;
+  /** false = for avanceret til helt nye medlemmer (vælges ikke til nybegyndere). Mangler = egnet. */
+  beginner_friendly?: boolean;
 };
 
 export type GymEquipmentItem = {
@@ -122,7 +127,7 @@ const FULL_BODY_ACCESSORIES: Slot[][] = [
 
 const UPPER: Slot[][] = [
   [S("push_h", "push_horizontal", "dip"), S("pull_v", "pull_vertical"), S("push_v", "push_vertical"), S("pull_h", "pull_horizontal"), S("chest_fly", "chest_fly"), S("biceps", "elbow_flexion"), S("triceps", "elbow_extension", "dip"), S("rear_delts", "rear_delt_fly")],
-  [S("pull_h", "pull_horizontal"), S("push_h", "push_horizontal", "dip"), S("pull_v", "pull_vertical"), S("side_delts", "lateral_raise", "push_vertical"), S("triceps", "elbow_extension", "dip"), S("biceps", "elbow_flexion"), S("rear_delts", "rear_delt_fly", "pull_horizontal")],
+  [S("pull_h", "pull_horizontal"), S("push_h", "push_horizontal", "dip"), S("pull_v", "pull_vertical"), S("side_delts", "lateral_raise", "push_vertical"), S("triceps", "elbow_extension", "dip"), S("rear_delts", "rear_delt_fly", "pull_horizontal"), S("core", "core_anti_extension", "core_flexion")],
 ];
 
 const LOWER: Slot[][] = [
@@ -140,13 +145,19 @@ function tier(e: CatalogExercise): number {
   return 2; // kropsvægt/standardudstyr
 }
 
+const isCoreSlot = (slot: Slot) => slot.id.startsWith("core");
+
 const STATUS_RANK: Record<string, number> = { verified: 0, pending: 1, disputed: 2 };
 
 const COMPOUND = new Set(["squat", "lunge", "push_horizontal", "push_vertical", "pull_horizontal", "hinge"]);
 
 export function generateProgram(input: GeneratorInput): GeneratedProgram {
-  const rankOf = (e: CatalogExercise) =>
-    input.moreFreeWeights && e.is_free_weight && COMPOUND.has(e.movement_pattern ?? "") ? -1 : tier(e);
+  const rankOf = (e: CatalogExercise, slot: Slot) => {
+    // Mave/core: helst på gulvet med måtte
+    if (isCoreSlot(slot) && e.machine_type_slug === "mat") return -2;
+    return input.moreFreeWeights && e.is_free_weight && COMPOUND.has(e.movement_pattern ?? "") ? -1 : tier(e);
+  };
+  const beginner = input.experience === "beginner";
   const prefs = input.preferences ?? {};
   const usable = input.equipment.filter((e) => e.status !== "removed");
 
@@ -172,19 +183,29 @@ export function generateProgram(input: GeneratorInput): GeneratedProgram {
     return e;
   };
 
-  const candidatesFor = (slot: Slot): CatalogExercise[] => {
-    const out: CatalogExercise[] = [];
+  /**
+   * Kandidater til et slot. `basis` er den katalogøvelse, kandidaten stammer fra: et selvvalgt
+   * alternativ rangeres som den øvelse, det erstatter, så valget ikke taber til andre muligheder.
+   */
+  type Candidate = { ex: CatalogExercise; basis: CatalogExercise };
+  const candidatesFor = (slot: Slot): Candidate[] => {
+    const out: Candidate[] = [];
     for (const e of input.catalog) {
       if (!slot.patterns.includes(e.movement_pattern ?? "") || !available(e)) continue;
+      // For avanceret til nybegyndere – medmindre brugeren selv har valgt den som alternativ (se resolve)
+      if (beginner && e.beginner_friendly === false) continue;
       const r = resolve(e);
-      if (r && !out.some((o) => o.id === r.id)) out.push(r);
+      if (r && !out.some((o) => o.ex.id === r.id)) out.push({ ex: r, basis: e });
     }
     // Maskine først (tier), dernæst mønstrets prioritet i slottet, så navn for stabil rækkefølge
     const rank = (e: CatalogExercise) => {
       const i = slot.patterns.indexOf(e.movement_pattern ?? "");
       return i === -1 ? slot.patterns.length : i;
     };
-    return out.sort((a, b) => rankOf(a) - rankOf(b) || rank(a) - rank(b) || a.slug.localeCompare(b.slug));
+    return out.sort(
+      (a, b) =>
+        rankOf(a.basis, slot) - rankOf(b.basis, slot) || rank(a.basis) - rank(b.basis) || a.basis.slug.localeCompare(b.basis.slug),
+    );
   };
 
   const setsFor = (e: CatalogExercise) => {
@@ -200,11 +221,12 @@ export function generateProgram(input: GeneratorInput): GeneratedProgram {
     const used = new Set<string>();
     const exercises: PlannedExercise[] = [];
     for (const slot of slots) {
-      const cands = candidatesFor(slot).filter((c) => !used.has(c.id));
+      const cands = candidatesFor(slot).filter((c) => !used.has(c.ex.id));
       if (cands.length === 0) continue; // tving intet ind
       // Variation mellem dage: vælg en anden kandidat i samme (bedste) niveau, hvis der er flere
-      const best = cands.filter((c) => rankOf(c) === rankOf(cands[0]) && c.movement_pattern === cands[0].movement_pattern);
-      const pick = best[variant % best.length];
+      const top = cands[0].basis;
+      const best = cands.filter((c) => rankOf(c.basis, slot) === rankOf(top, slot) && c.basis.movement_pattern === top.movement_pattern);
+      const pick = best[variant % best.length].ex;
       used.add(pick.id);
       const eq = equipmentByType.get(pick.machine_type_slug)!;
       exercises.push({

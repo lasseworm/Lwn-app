@@ -124,14 +124,14 @@ isOneToOne: false
                   ]
                 },"exercises": {
                   Row: {
-                    "default_rep_max": number | null,"default_rep_min": number | null,"default_sets": number | null,"id": string,"instructions": Json | null,"is_free_weight": boolean | null,"is_sample": boolean | null,"machine_type_id": string | null,"movement_pattern": string | null,"name": string,"primary_muscles": (string)[] | null,"secondary_muscles": (string)[] | null,"slug": string | null
+                    "beginner_friendly": boolean,"default_rep_max": number | null,"default_rep_min": number | null,"default_sets": number | null,"id": string,"instructions": Json | null,"is_free_weight": boolean | null,"is_sample": boolean | null,"machine_type_id": string | null,"movement_pattern": string | null,"name": string,"primary_muscles": (string)[] | null,"secondary_muscles": (string)[] | null,"slug": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "default_rep_max"?: number | null,"default_rep_min"?: number | null,"default_sets"?: number | null,"id"?: string,"instructions"?: Json | null,"is_free_weight"?: boolean | null,"is_sample"?: boolean | null,"machine_type_id"?: string | null,"movement_pattern"?: string | null,"name": string,"primary_muscles"?: (string)[] | null,"secondary_muscles"?: (string)[] | null,"slug"?: string | null
+                    "beginner_friendly"?: boolean,"default_rep_max"?: number | null,"default_rep_min"?: number | null,"default_sets"?: number | null,"id"?: string,"instructions"?: Json | null,"is_free_weight"?: boolean | null,"is_sample"?: boolean | null,"machine_type_id"?: string | null,"movement_pattern"?: string | null,"name": string,"primary_muscles"?: (string)[] | null,"secondary_muscles"?: (string)[] | null,"slug"?: string | null
                   }
                   Update: {
-                    "default_rep_max"?: number | null,"default_rep_min"?: number | null,"default_sets"?: number | null,"id"?: string,"instructions"?: Json | null,"is_free_weight"?: boolean | null,"is_sample"?: boolean | null,"machine_type_id"?: string | null,"movement_pattern"?: string | null,"name"?: string,"primary_muscles"?: (string)[] | null,"secondary_muscles"?: (string)[] | null,"slug"?: string | null
+                    "beginner_friendly"?: boolean,"default_rep_max"?: number | null,"default_rep_min"?: number | null,"default_sets"?: number | null,"id"?: string,"instructions"?: Json | null,"is_free_weight"?: boolean | null,"is_sample"?: boolean | null,"machine_type_id"?: string | null,"movement_pattern"?: string | null,"name"?: string,"primary_muscles"?: (string)[] | null,"secondary_muscles"?: (string)[] | null,"slug"?: string | null
                   }
                   Relationships: [
                     {

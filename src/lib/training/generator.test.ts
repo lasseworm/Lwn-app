@@ -196,3 +196,51 @@ describe("generateProgram – variation og præferencer", () => {
     expect(allExercises(p).every((e) => e.sets >= 3)).toBe(true);
   });
 });
+
+describe("generateProgram – nybegyndere (fra test)", () => {
+  const CABLE_GYM = gym("chest_press", "lat_pulldown", "leg_press", "seated_leg_curl", "cable_station", "ab_roller", "ab_crunch_machine", "mat");
+  const slugsOf = (p: ReturnType<typeof generateProgram>) => allExercises(p).map((e) => byId.get(e.exercise_id)!.slug);
+
+  it("nybegyndere får ikke bicepscurl i kabel eller ab-roller", () => {
+    for (const n of [2, 3, 4] as const) {
+      const s = slugsOf(generateProgram({ sessionsPerWeek: n, experience: "beginner", catalog, equipment: CABLE_GYM }));
+      expect(s).not.toContain("cable_biceps_curl");
+      expect(s).not.toContain("ab_roller_rollout");
+    }
+  });
+
+  it("let øvede kan godt få bicepscurl i kabel", () => {
+    const s = slugsOf(generateProgram({ sessionsPerWeek: 2, experience: "intermediate", catalog, equipment: CABLE_GYM }));
+    expect(s).toContain("cable_biceps_curl");
+  });
+
+  it("selvvalgt alternativ respekteres, selvom det er avanceret", () => {
+    const s = slugsOf(
+      generateProgram({
+        sessionsPerWeek: 2,
+        experience: "beginner",
+        catalog,
+        equipment: CABLE_GYM,
+        preferences: { mat_plank: { replacement_exercise_id: "ab_roller_rollout", excluded: false } },
+      }),
+    );
+    expect(s).toContain("ab_roller_rollout");
+  });
+
+  it("mave på gulvet med måtte frem for mavemaskine", () => {
+    for (const n of [2, 3, 4] as const) {
+      const p = generateProgram({ sessionsPerWeek: n, experience: "beginner", catalog, equipment: MACHINE_GYM });
+      const core = allExercises(p).filter((e) => e.slot.startsWith("core"));
+      expect(core.length).toBeGreaterThan(0);
+      for (const e of core) expect(byId.get(e.exercise_id)!.machine_type_slug, `${n} pas`).toBe("mat");
+    }
+  });
+
+  it("højst én bicepsøvelse om ugen", () => {
+    for (const n of [2, 3, 4] as const) {
+      const p = generateProgram({ sessionsPerWeek: n, experience: "beginner", catalog, equipment: MACHINE_GYM });
+      const biceps = allExercises(p).filter((e) => byId.get(e.exercise_id)!.movement_pattern === "elbow_flexion");
+      expect(biceps.length, `${n} pas`).toBeLessThanOrEqual(1);
+    }
+  });
+});

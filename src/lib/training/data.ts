@@ -10,7 +10,7 @@ export async function loadCatalog(supabase: Db): Promise<CatalogExercise[]> {
   const { data, error } = await supabase
     .from("exercises")
     .select(
-      "id, slug, name, movement_pattern, primary_muscles, is_free_weight, default_sets, default_rep_min, default_rep_max, machine_types(slug, category)",
+      "id, slug, name, movement_pattern, primary_muscles, is_free_weight, default_sets, default_rep_min, default_rep_max, beginner_friendly, machine_types(slug, category)",
     );
   if (error) throw new Error(error.message);
   return (data ?? [])
@@ -27,6 +27,7 @@ export async function loadCatalog(supabase: Db): Promise<CatalogExercise[]> {
       default_sets: e.default_sets ?? 3,
       default_rep_min: e.default_rep_min ?? 8,
       default_rep_max: e.default_rep_max ?? 12,
+      beginner_friendly: e.beginner_friendly,
     }));
 }
 
@@ -37,12 +38,13 @@ export type EquipmentRow = GymEquipmentItem & {
   extra_plate_kg: number | null;
   min_weight_kg: number | null;
   max_weight_kg: number | null;
+  photo_path: string | null;
 };
 
 export async function loadGymEquipment(supabase: Db, gymId: string): Promise<EquipmentRow[]> {
   const { data, error } = await supabase
     .from("gym_equipment")
-    .select("id, status, machine_type_id, weight_step_kg, extra_plate_kg, min_weight_kg, max_weight_kg, machine_types(slug, category)")
+    .select("id, status, machine_type_id, weight_step_kg, extra_plate_kg, min_weight_kg, max_weight_kg, photo_path, machine_types(slug, category)")
     .eq("gym_id", gymId)
     .neq("status", "removed");
   if (error) throw new Error(error.message);
@@ -58,6 +60,7 @@ export async function loadGymEquipment(supabase: Db, gymId: string): Promise<Equ
       extra_plate_kg: e.extra_plate_kg,
       min_weight_kg: e.min_weight_kg,
       max_weight_kg: e.max_weight_kg,
+      photo_path: e.photo_path,
     }));
 }
 

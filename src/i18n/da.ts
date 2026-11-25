@@ -302,6 +302,7 @@ export const da = {
     } as Record<string, string>,
   },
   workout: {
+    machinePhoto: "Foto af maskinen i dit center",
     resume: "Fortsæt dit pas",
     startNow: "Start nu",
     getStarted: "Kom i gang",

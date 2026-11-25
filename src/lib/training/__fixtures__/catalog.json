@@ -105,7 +105,8 @@
   "is_free_weight": false,
   "default_sets": 2,
   "default_rep_min": 10,
-  "default_rep_max": 15
+  "default_rep_max": 15,
+  "beginner_friendly": false
  },
  {
   "id": "cable_face_pull",
@@ -750,5 +751,21 @@
   "default_sets": 3,
   "default_rep_min": 8,
   "default_rep_max": 12
+ },
+ {
+  "id": "ab_roller_rollout",
+  "slug": "ab_roller_rollout",
+  "name": "Udrulning med ab-roller fra knæ",
+  "machine_type_slug": "ab_roller",
+  "machine_category": "accessory",
+  "movement_pattern": "core_anti_extension",
+  "primary_muscles": [
+   "abs"
+  ],
+  "is_free_weight": false,
+  "default_sets": 2,
+  "default_rep_min": 6,
+  "default_rep_max": 12,
+  "beginner_friendly": false
  }
 ]
