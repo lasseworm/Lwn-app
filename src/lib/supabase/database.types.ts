@@ -276,14 +276,14 @@ isOneToOne: false
                   ]
                 },"programs": {
                   Row: {
-                    "active": boolean | null,"generated_at": string | null,"gym_id": string | null,"id": string,"sessions_per_week": number | null,"user_id": string | null,"version": number | null
+                    "active": boolean | null,"generated_at": string | null,"gym_id": string | null,"id": string,"sessions_per_week": number | null,"source": string,"user_id": string | null,"version": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean | null,"generated_at"?: string | null,"gym_id"?: string | null,"id"?: string,"sessions_per_week"?: number | null,"user_id"?: string | null,"version"?: number | null
+                    "active"?: boolean | null,"generated_at"?: string | null,"gym_id"?: string | null,"id"?: string,"sessions_per_week"?: number | null,"source"?: string,"user_id"?: string | null,"version"?: number | null
                   }
                   Update: {
-                    "active"?: boolean | null,"generated_at"?: string | null,"gym_id"?: string | null,"id"?: string,"sessions_per_week"?: number | null,"user_id"?: string | null,"version"?: number | null
+                    "active"?: boolean | null,"generated_at"?: string | null,"gym_id"?: string | null,"id"?: string,"sessions_per_week"?: number | null,"source"?: string,"user_id"?: string | null,"version"?: number | null
                   }
                   Relationships: [
                     {
@@ -300,6 +300,54 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"ai_usage": {
+                  Row: {
+                    "cost_usd": number | null,"created_at": string,"feature": string,"gym_id": string | null,"id": string,"input_tokens": number | null,"model": string | null,"output_tokens": number | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cost_usd"?: number | null,"created_at"?: string,"feature": string,"gym_id"?: string | null,"id"?: string,"input_tokens"?: number | null,"model"?: string | null,"output_tokens"?: number | null,"user_id": string
+                  }
+                  Update: {
+                    "cost_usd"?: number | null,"created_at"?: string,"feature"?: string,"gym_id"?: string | null,"id"?: string,"input_tokens"?: number | null,"model"?: string | null,"output_tokens"?: number | null,"user_id"?: string
+                  }
+                  Relationships: []
+                },"plan_limits": {
+                  Row: {
+                    "feature": string,"max_uses": number | null,"period": string,"plan": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "feature": string,"max_uses"?: number | null,"period": string,"plan": string
+                  }
+                  Update: {
+                    "feature"?: string,"max_uses"?: number | null,"period"?: string,"plan"?: string
+                  }
+                  Relationships: []
+                },"stripe_events": {
+                  Row: {
+                    "id": string,"received_at": string,"type": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "id": string,"received_at"?: string,"type": string
+                  }
+                  Update: {
+                    "id"?: string,"received_at"?: string,"type"?: string
+                  }
+                  Relationships: []
+                },"subscriptions": {
+                  Row: {
+                    "cancel_at_period_end": boolean,"created_at": string,"current_period_end": string | null,"price_id": string | null,"status": string,"stripe_customer_id": string | null,"stripe_subscription_id": string | null,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cancel_at_period_end"?: boolean,"created_at"?: string,"current_period_end"?: string | null,"price_id"?: string | null,"status"?: string,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "cancel_at_period_end"?: boolean,"created_at"?: string,"current_period_end"?: string | null,"price_id"?: string | null,"status"?: string,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: []
                 },"user_gyms": {
                   Row: {
                     "gym_id": string,"label": string | null,"user_id": string
@@ -396,7 +444,13 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "create_program":
+            "ai_remaining":
+{ Args: { "p_feature": string,"p_user": string }; Returns: number | null
+                           },
+"is_pro":
+{ Args: { "p_user": string }; Returns: boolean
+                           },
+"create_program":
 { Args: { "p_days": Json,"p_gym_id": string,"p_sessions_per_week": number }; Returns: string
                            },
 "finish_workout":

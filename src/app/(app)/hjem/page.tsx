@@ -115,6 +115,14 @@ export default async function HomePage() {
       </Card>
 
       <Card>
+        <h2 className="text-lg font-bold">{t.pro.title}</h2>
+        <p className="mt-1 text-base text-muted">{t.pro.homeCard}</p>
+        <ButtonLink href="/pro" variant="secondary" className="mt-5">
+          {t.pro.homeButton}
+        </ButtonLink>
+      </Card>
+
+      <Card>
         <h2 className="text-lg font-bold">{t.home.catalogCard}</h2>
         <p className="mt-1 text-base text-muted">
           {t.home.catalogCount(machineTypes.count ?? 0, exercises.count ?? 0)}
