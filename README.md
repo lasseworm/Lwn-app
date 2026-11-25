@@ -160,8 +160,9 @@ Uden site key i Vercel vises intet tjek, og login virker som før. Slår du det 
 
 ## Eksempeldata
 
-- Katalog (39 maskintyper, 49 øvelser) ligger i en migration og er markeret `is_sample = true`. Det vises med et **Eksempel**-mærke og skal kvalitetssikres.
+- Katalog (41 maskintyper, 52 øvelser) ligger i en migration og er markeret `is_sample = true`. Det vises med et **Eksempel**-mærke og skal kvalitetssikres.
 - `supabase/seed.sql` opretter et demo-center (`is_sample = true`) – kun lokalt.
+- **Stregtegninger af øvelserne** (`src/content/illustrations/`) er midlertidige og kun til test. De vises som "Start" og "Slut" på træningsskærmen, i vejledningen og på maskinens side. **De skal erstattes af rigtige illustrationer eller fotos, før appen bruges af andre.** Nøglen er `exercises.slug`, og en test sikrer, at alle øvelser i kataloget har en tegning.
 
 ---
 

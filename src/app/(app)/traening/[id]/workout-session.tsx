@@ -17,10 +17,12 @@ import {
 } from "@/lib/training/progression";
 import { validWeights } from "@/lib/equipment/weights";
 import { muscleName, t } from "@/i18n";
+import { ExerciseIllustration } from "@/components/exercise-illustration";
 import { deleteSet, finishWorkout, logSet, savePreference, updateSet } from "../actions";
 
 export type AltOption = {
   exerciseId: string;
+  slug: string;
   name: string;
   machineTypeSlug: string;
   movementPattern: string | null;
@@ -376,6 +378,7 @@ export function WorkoutSession({
             </a>
           )}
         </div>
+        <ExerciseIllustration slug={opt.slug} className="mx-auto max-w-60" />
 
         {cur.status === "stopped" ? (
           <p role="status" className="rounded-2xl border border-danger/40 bg-danger/10 p-4 text-sm">

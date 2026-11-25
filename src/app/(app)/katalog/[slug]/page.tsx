@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, SampleBadge } from "@/components/ui";
+import { ExerciseIllustration } from "@/components/exercise-illustration";
 import { createClient } from "@/lib/supabase/server";
 import { muscleName, t } from "@/i18n";
 
@@ -117,6 +118,7 @@ export default async function MachinePage(props: PageProps<"/katalog/[slug]">) {
                 <span className="block text-sm text-muted">
                   {e.default_sets} × {e.default_rep_min}–{e.default_rep_max} · {(e.primary_muscles ?? []).map(muscleName).join(", ")}
                 </span>
+                <ExerciseIllustration slug={e.slug} className="mt-2 max-w-xs" />
               </li>
             ))}
           </ul>
