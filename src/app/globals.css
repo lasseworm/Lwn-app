@@ -13,6 +13,8 @@
   --accent-foreground: #111214;
   /* Orange som TEKST på lys baggrund: mørkere nuance, 5:1 mod #f6f7f9 (WCAG AA) */
   --accent-text: #a85400;
+  /* Datalinje i grafer (valideret: lyshedsbånd og kontrast mod fladen) */
+  --chart-line: #a85400;
   --danger: #c0262d;
 }
 
@@ -28,6 +30,7 @@
     --accent: #ff8a00;
     --accent-foreground: #111214;
     --accent-text: #ff8a00; /* 7,9:1 mod #111214 */
+    --chart-line: #e67c00;
     --danger: #f97066;
   }
 }

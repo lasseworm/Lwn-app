@@ -6,7 +6,33 @@ export type Database = {
   
   "public": {
           Tables: {
-            "equipment_confirmations": {
+            "ai_usage": {
+                  Row: {
+                    "cost_usd": number | null,"created_at": string,"feature": string,"gym_id": string | null,"id": string,"input_tokens": number | null,"model": string | null,"output_tokens": number | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cost_usd"?: number | null,"created_at"?: string,"feature": string,"gym_id"?: string | null,"id"?: string,"input_tokens"?: number | null,"model"?: string | null,"output_tokens"?: number | null,"user_id": string
+                  }
+                  Update: {
+                    "cost_usd"?: number | null,"created_at"?: string,"feature"?: string,"gym_id"?: string | null,"id"?: string,"input_tokens"?: number | null,"model"?: string | null,"output_tokens"?: number | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "ai_usage_gym_id_fkey"
+      columns: ["gym_id"]
+isOneToOne: false
+      referencedRelation: "gyms"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ai_usage_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"equipment_confirmations": {
                   Row: {
                     "created_at": string | null,"equipment_id": string,"note": string | null,"user_id": string,"vote": string | null
                   }
@@ -202,16 +228,30 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
-                },"profiles": {
+                },"plan_limits": {
                   Row: {
-                    "active_gym_id": string | null,"created_at": string | null,"display_name": string | null,"experience_level": string | null,"goal": string | null,"id": string,"sessions_per_week": number | null,"training_type": string | null,"warmup_enabled": boolean
+                    "feature": string,"max_uses": number | null,"period": string,"plan": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id": string,"sessions_per_week"?: number | null,"training_type"?: string | null,"warmup_enabled"?: boolean
+                    "feature": string,"max_uses"?: number | null,"period": string,"plan": string
                   }
                   Update: {
-                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id"?: string,"sessions_per_week"?: number | null,"training_type"?: string | null,"warmup_enabled"?: boolean
+                    "feature"?: string,"max_uses"?: number | null,"period"?: string,"plan"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"profiles": {
+                  Row: {
+                    "active_gym_id": string | null,"created_at": string | null,"display_name": string | null,"experience_level": string | null,"goal": string | null,"id": string,"program_review_snoozed_until": string | null,"sessions_per_week": number | null,"training_type": string | null,"warmup_enabled": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id": string,"program_review_snoozed_until"?: string | null,"sessions_per_week"?: number | null,"training_type"?: string | null,"warmup_enabled"?: boolean
+                  }
+                  Update: {
+                    "active_gym_id"?: string | null,"created_at"?: string | null,"display_name"?: string | null,"experience_level"?: string | null,"goal"?: string | null,"id"?: string,"program_review_snoozed_until"?: string | null,"sessions_per_week"?: number | null,"training_type"?: string | null,"warmup_enabled"?: boolean
                   }
                   Relationships: [
                     {
@@ -300,30 +340,6 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"ai_usage": {
-                  Row: {
-                    "cost_usd": number | null,"created_at": string,"feature": string,"gym_id": string | null,"id": string,"input_tokens": number | null,"model": string | null,"output_tokens": number | null,"user_id": string
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "cost_usd"?: number | null,"created_at"?: string,"feature": string,"gym_id"?: string | null,"id"?: string,"input_tokens"?: number | null,"model"?: string | null,"output_tokens"?: number | null,"user_id": string
-                  }
-                  Update: {
-                    "cost_usd"?: number | null,"created_at"?: string,"feature"?: string,"gym_id"?: string | null,"id"?: string,"input_tokens"?: number | null,"model"?: string | null,"output_tokens"?: number | null,"user_id"?: string
-                  }
-                  Relationships: []
-                },"plan_limits": {
-                  Row: {
-                    "feature": string,"max_uses": number | null,"period": string,"plan": string
-                  }
-                  ComputedFields: never
-                  Insert: {
-                    "feature": string,"max_uses"?: number | null,"period": string,"plan": string
-                  }
-                  Update: {
-                    "feature"?: string,"max_uses"?: number | null,"period"?: string,"plan"?: string
-                  }
-                  Relationships: []
                 },"stripe_events": {
                   Row: {
                     "id": string,"received_at": string,"type": string
@@ -335,7 +351,9 @@ isOneToOne: false
                   Update: {
                     "id"?: string,"received_at"?: string,"type"?: string
                   }
-                  Relationships: []
+                  Relationships: [
+                    
+                  ]
                 },"subscriptions": {
                   Row: {
                     "cancel_at_period_end": boolean,"created_at": string,"current_period_end": string | null,"price_id": string | null,"status": string,"stripe_customer_id": string | null,"stripe_subscription_id": string | null,"updated_at": string,"user_id": string
@@ -347,7 +365,15 @@ isOneToOne: false
                   Update: {
                     "cancel_at_period_end"?: boolean,"created_at"?: string,"current_period_end"?: string | null,"price_id"?: string | null,"status"?: string,"stripe_customer_id"?: string | null,"stripe_subscription_id"?: string | null,"updated_at"?: string,"user_id"?: string
                   }
-                  Relationships: []
+                  Relationships: [
+                    {
+      foreignKeyName: "subscriptions_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"user_gyms": {
                   Row: {
                     "gym_id": string,"label": string | null,"user_id": string
@@ -445,16 +471,19 @@ isOneToOne: false
           }
           Functions: {
             "ai_remaining":
-{ Args: { "p_feature": string,"p_user": string }; Returns: number | null
-                           },
-"is_pro":
-{ Args: { "p_user": string }; Returns: boolean
+{ Args: { "p_feature": string,"p_user": string }; Returns: number
                            },
 "create_program":
 { Args: { "p_days": Json,"p_gym_id": string,"p_sessions_per_week": number }; Returns: string
                            },
+"delete_my_account":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "finish_workout":
 { Args: { "p_progress": Json,"p_workout_id": string }; Returns: undefined
+                           },
+"is_pro":
+{ Args: { "p_user": string }; Returns: boolean
                            }
           }
           Enums: {

@@ -174,6 +174,23 @@ describe("generateProgram – variation og præferencer", () => {
     expect(allExercises(only).some((e) => e.exercise_id === "machine_assisted_pullup")).toBe(true);
   });
 
+  it("flere frie vægte (12-ugers-opdatering): flerledsøvelser med frie vægte, isolation på maskiner", () => {
+    const p = generateProgram({ sessionsPerWeek: 3, experience: "beginner", catalog, equipment: MACHINE_GYM, moreFreeWeights: true });
+    const a = p.days[0].exercises;
+    expect(byId.get(a.find((e) => e.slot === "squat")!.exercise_id)!.is_free_weight).toBe(true);
+    expect(byId.get(a.find((e) => e.slot === "push_h")!.exercise_id)!.is_free_weight).toBe(true);
+    expect(byId.get(a.find((e) => e.slot === "pull_v")!.exercise_id)!.is_free_weight).toBe(false); // ingen fri-vægts-variant
+    expect(byId.get(a.find((e) => e.slot === "biceps")!.exercise_id)!.is_free_weight).toBe(false);
+    expect(p.uncovered).toEqual([]);
+  });
+
+  it("flere frie vægte uden frie vægte i centret: samme program som før", () => {
+    const equipment = MACHINE_GYM.filter((e) => e.machine_type_slug !== "dumbbells");
+    const a = generateProgram({ sessionsPerWeek: 3, experience: "beginner", catalog, equipment });
+    const b = generateProgram({ sessionsPerWeek: 3, experience: "beginner", catalog, equipment, moreFreeWeights: true });
+    expect(b.days).toEqual(a.days);
+  });
+
   it("let øvede får mindst 3 sæt", () => {
     const p = generateProgram({ sessionsPerWeek: 3, experience: "intermediate", catalog, equipment: MACHINE_GYM });
     expect(allExercises(p).every((e) => e.sets >= 3)).toBe(true);
