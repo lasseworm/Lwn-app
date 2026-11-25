@@ -27,7 +27,7 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
   const { data: e } = await supabase
     .from("gym_equipment")
     .select(
-      "id, gym_id, custom_name, photo_path, status, confirmations, added_by, updated_at, weight_step_kg, extra_plate_kg, min_weight_kg, max_weight_kg, gyms(name, created_by), machine_types(slug, name, category, primary_muscles, is_multipurpose)",
+      "id, gym_id, custom_name, photo_path, status, confirmations, added_by, updated_at, weight_step_kg, extra_plate_kg, min_weight_kg, max_weight_kg, gyms(name, created_by), machine_types(slug, name, category, primary_muscles, is_multipurpose, exercises(slug, name, primary_muscles))",
     )
     .eq("id", id)
     .maybeSingle();
@@ -47,6 +47,7 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
   }
 
   const mt = e.machine_types;
+  const exercises = [...(mt?.exercises ?? [])].sort((a, b) => a.name.localeCompare(b.name, "da"));
   const status = e.status ?? "pending";
   const removed = status === "removed";
   // Kun andre end den, der tilføjede maskinen, kan bekræfte den
@@ -105,6 +106,21 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
           </Link>
         )}
       </header>
+
+      {exercises.length > 0 && (
+        <Card>
+          <h2 className="text-lg font-bold">{t.equipment.exercisesTitle}</h2>
+          <p className="mt-1 text-sm text-muted">{t.equipment.exercisesHint(exercises.length)}</p>
+          <ul className="mt-2 divide-y divide-border">
+            {exercises.map((x) => (
+              <li key={x.slug} className="py-3">
+                <span className="block text-base font-semibold">{x.name}</span>
+                <span className="block text-sm text-muted">{(x.primary_muscles ?? []).map(muscleName).join(", ")}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
 
       <Card>
         <h2 className="text-lg font-bold">{t.equipment.detailWeights}</h2>
