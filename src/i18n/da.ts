@@ -216,6 +216,7 @@ export const da = {
     saveChanges: "Gem ændringer",
     confirm: "Bekræft – maskinen findes",
     confirmed: "Du har bekræftet denne maskine.",
+    waitingForOthers: "Venter på, at en anden bruger bekræfter maskinen.",
     confirmations: (n: number) => (n === 1 ? "1 bekræftelse" : `${n} bekræftelser`),
     report: "Rapportér forkerte oplysninger",
     reportPlaceholder: "Hvad er forkert?",
