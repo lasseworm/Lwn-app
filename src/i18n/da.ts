@@ -233,6 +233,9 @@ export const da = {
     removeConfirm: "Er du sikker? Maskinen skjules for alle i centret.",
     restore: "Gendan maskinen",
     seeInstructions: "Se vejledning til maskinen",
+    exercisesTitle: "Øvelser på maskinen",
+    exercisesHint: (n: number) =>
+      n === 1 ? "Denne øvelse kan indgå i dit program." : `Maskinen kan bruges til ${n} øvelser, som alle kan indgå i dit program.`,
     addedOn: (d: string) => `Tilføjet ${d}`,
     standardTitle: "Ekstra standardudstyr",
     standardIntro: "Sæt flueben ved det, der findes i centret. Det tager ét tryk.",
