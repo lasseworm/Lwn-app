@@ -48,6 +48,8 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
 
   const mt = e.machine_types;
   const exercises = [...(mt?.exercises ?? [])].sort((a, b) => a.name.localeCompare(b.name, "da"));
+  // Alle muskler maskinen træner: maskintypens egne først, derefter dem fra de øvrige øvelser
+  const muscles = [...new Set([...(mt?.primary_muscles ?? []), ...exercises.flatMap((x) => x.primary_muscles ?? [])])];
   const status = e.status ?? "pending";
   const removed = status === "removed";
   // Kun andre end den, der tilføjede maskinen, kan bekræfte den
@@ -96,8 +98,7 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
         <h1 className="mt-1 text-3xl font-black tracking-tight">{mt?.name}</h1>
         {e.custom_name && <p className="mt-1 text-base text-muted">{e.custom_name}</p>}
         <p className="mt-1 text-sm text-muted">
-          {!mt?.is_multipurpose && (mt?.primary_muscles ?? []).map(muscleName).join(", ")}
-          {!mt?.is_multipurpose && " · "}
+          {muscles.length > 0 && `${muscles.map(muscleName).join(", ")} · `}
           {t.equipment.confirmations(e.confirmations ?? 0)}
         </p>
         {mt && (
