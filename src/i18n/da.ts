@@ -209,6 +209,8 @@ export const da = {
     preview: "Vægte du kan vælge",
     save: "Gem maskine",
     saving: "Gemmer…",
+    addAnother: "Tilføj en maskine mere",
+    toHome: "Til forsiden",
     savedPending: "Gemt. Maskinen står som 'afventer', indtil en anden bruger har bekræftet den.",
     detailWeights: "Vægttrin",
     noWeights: "Ingen vægttrin angivet.",

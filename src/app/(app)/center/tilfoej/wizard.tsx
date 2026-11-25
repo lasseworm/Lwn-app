@@ -183,7 +183,7 @@ export function AddEquipmentWizard({
     setBusy(t.equipment.saving);
     const res = await pickExistingEquipment(existingId, photoPath);
     setBusy(null);
-    if (res.ok) router.push(`/center/udstyr/${res.id}`);
+    if (res.ok) router.push(`/center/udstyr/${res.id}?valgt=1`);
     else setError(res.error);
   }
 
