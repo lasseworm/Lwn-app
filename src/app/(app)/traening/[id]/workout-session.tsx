@@ -24,6 +24,8 @@ export type AltOption = {
   exerciseId: string;
   slug: string;
   name: string;
+  /** false = for avanceret til at blive foreslået automatisk */
+  beginnerFriendly: boolean;
   machineTypeSlug: string;
   movementPattern: string | null;
   primaryMuscles: string[];
@@ -212,7 +214,8 @@ export function WorkoutSession({
   const firstOpen = state.findIndex((s) => s.status === "active" && s.rows.some((r) => !r.done && !r.warmup));
   const [index, setIndex] = useState(firstOpen === -1 ? 0 : firstOpen);
   const [error, setError] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<null | { kind: "alt"; reason: string } | { kind: "pain" }>(null);
+  const [sheet, setSheet] = useState<null | { kind: "alt" } | { kind: "pain" }>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [finishing, startFinish] = useTransition();
 
   const cur = state[index];
@@ -276,6 +279,29 @@ export function WorkoutSession({
       const rows = doneRows.length ? s.rows.map((r) => (r.done ? r : { ...r, weight: r.warmup ? r.weight : w })) : buildRows(s.prescription, s.plan, w, warmupEnabled, s.option);
       return { ...s, targetWeight: w, started: true, rows };
     });
+  }
+
+  const go = (i: number) => {
+    setNotice(null);
+    setIndex(i);
+  };
+
+  /** "Maskinen er optaget": flyt øvelsen bagerst blandt de øvelser, der mangler, og gå videre */
+  function moveLater() {
+    const isOpen = (s: ItemState) => s.status === "active" && s.rows.some((r) => !r.done && !r.warmup);
+    const othersOpen = state.some((s, i) => i !== index && isOpen(s));
+    if (!othersOpen) {
+      setNotice(t.workout.occupiedLast);
+      return;
+    }
+    setState((all) => {
+      const moved = all[index];
+      const rest = all.filter((_, i) => i !== index);
+      return [...rest, moved];
+    });
+    setNotice(t.workout.occupiedMoved(opt.name));
+    // Samme indeks viser nu den næste øvelse; var det den sidste, gå til første åbne
+    if (index >= state.length - 1) setIndex(state.findIndex((s, i) => i !== index && isOpen(s)));
   }
 
   function swapTo(o: AltOption) {
@@ -346,7 +372,7 @@ export function WorkoutSession({
               <button
                 key={s.key}
                 type="button"
-                onClick={() => setIndex(i)}
+                onClick={() => go(i)}
                 aria-label={`${i + 1}. ${s.option.name}`}
                 aria-current={i === index ? "step" : undefined}
                 className={`h-2.5 flex-1 rounded-full ${
@@ -358,6 +384,12 @@ export function WorkoutSession({
         </nav>
         <p className="mt-2 text-sm text-muted">{t.workout.exerciseOf(index + 1, state.length)}</p>
       </header>
+
+      {notice && (
+        <p role="status" className="rounded-2xl border border-accent/50 bg-accent/15 p-4 text-sm">
+          {notice}
+        </p>
+      )}
 
       {/* -------------------------------------------------------------- Øvelse */}
       <Card className="space-y-4">
@@ -465,8 +497,8 @@ export function WorkoutSession({
 
             {/* Handlinger */}
             <div className="grid grid-cols-2 gap-2">
-              <SmallButton onClick={() => setSheet({ kind: "alt", reason: "dislike" })}>{t.workout.findAlternative}</SmallButton>
-              <SmallButton onClick={() => setSheet({ kind: "alt", reason: "occupied" })}>{t.workout.occupied}</SmallButton>
+              <SmallButton onClick={() => setSheet({ kind: "alt" })}>{t.workout.findAlternative}</SmallButton>
+              <SmallButton onClick={moveLater}>{t.workout.occupied}</SmallButton>
               <SmallButton onClick={() => setSheet({ kind: "pain" })} danger>
                 {t.workout.pain}
               </SmallButton>
@@ -491,11 +523,11 @@ export function WorkoutSession({
 
       {/* -------------------------------------------------------------- Navigation */}
       <div className="grid grid-cols-2 gap-3">
-        <Button variant="secondary" onClick={() => setIndex(Math.max(0, index - 1))} disabled={index === 0}>
+        <Button variant="secondary" onClick={() => go(Math.max(0, index - 1))} disabled={index === 0}>
           {t.workout.prev}
         </Button>
         {index < state.length - 1 ? (
-          <Button variant="dark" onClick={() => setIndex(index + 1)}>
+          <Button variant="dark" onClick={() => go(index + 1)}>
             {t.workout.nextExercise}
           </Button>
         ) : (
@@ -526,7 +558,6 @@ export function WorkoutSession({
         <AlternativesSheet
           current={opt}
           pool={pool.filter((o) => !state.some((s, i) => i !== index && s.option.exerciseId === o.exerciseId))}
-          initialReason={sheet.reason}
           onClose={() => setSheet(null)}
           onPick={async (o, reason, remember) => {
             setSheet(null);
@@ -629,89 +660,77 @@ function Sheet({ title, children, onClose }: { title: string; children: React.Re
 function AlternativesSheet({
   current,
   pool,
-  initialReason,
   onClose,
   onPick,
   onSkip,
 }: {
   current: AltOption;
   pool: AltOption[];
-  initialReason: string;
   onClose: () => void;
   onPick: (o: AltOption, reason: string, remember: boolean) => void;
   onSkip: (reason: string, remember: boolean) => void;
 }) {
-  const [reason, setReason] = useState(initialReason);
-  // En optaget maskine er typisk midlertidig – derfor huskes valget ikke som standard
-  const [remember, setRemember] = useState(initialReason !== "occupied");
+  const reason = "dislike";
+  const [remember, setRemember] = useState(true);
+  const [i, setI] = useState(0);
 
-  // Samme bevægelse først, derefter samme muskler. Maskiner før frie vægte.
+  // Bedste forslag først: samme bevægelse, ellers samme muskler. Begyndervenlige maskiner før frie vægte.
+  const shared = (o: AltOption) => o.primaryMuscles.filter((m) => current.primaryMuscles.includes(m)).length;
   const options = pool
     .filter((o) => o.exerciseId !== current.exerciseId)
     .map((o) => ({
       o,
       score:
-        (o.movementPattern === current.movementPattern ? 0 : o.primaryMuscles.some((m) => current.primaryMuscles.includes(m)) ? 1 : 9) * 10 +
-        (o.isFreeWeight ? 1 : 0) +
-        (reason === "occupied" && o.machineTypeSlug === current.machineTypeSlug ? 5 : 0),
+        (o.movementPattern === current.movementPattern ? 0 : shared(o) > 0 ? 10 : 99) -
+        Math.min(shared(o), 3) +
+        (o.beginnerFriendly ? 0 : 4) +
+        (o.isFreeWeight ? 12 : 0),
     }))
     .filter((x) => x.score < 90)
     .sort((a, b) => a.score - b.score || a.o.name.localeCompare(b.o.name, "da"))
-    .slice(0, 8)
+    .slice(0, 6)
     .map((x) => x.o);
+  const o = options[i % Math.max(1, options.length)];
 
   return (
     <Sheet title={t.workout.alternativesTitle} onClose={onClose}>
-      <p className="text-sm text-muted">{t.workout.alternativesIntro}</p>
-      <fieldset>
-        <legend className="mb-2 text-sm font-semibold">{t.workout.reasonLabel}</legend>
-        <div className="grid gap-2">
-          {Object.entries(t.workout.reasons).map(([value, label]) => (
-            <label key={value} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-border px-3 has-[:checked]:border-accent has-[:checked]:bg-accent/10">
-              <input
-                type="radio"
-                name="reason"
-                value={value}
-                checked={reason === value}
-                onChange={() => {
-                  setReason(value);
-                  setRemember(value !== "occupied");
-                }}
-                className="h-5 w-5 accent-[var(--accent)]"
-              />
-              <span className="text-sm font-semibold">{label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <label className="flex min-h-11 cursor-pointer items-center gap-3">
-        <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-5 w-5 accent-[var(--accent)]" />
-        <span className="text-sm font-semibold">{t.workout.remember}</span>
-      </label>
-      {options.length === 0 ? (
+      {!o ? (
         <p className="text-base text-muted">{t.workout.noAlternatives}</p>
       ) : (
-        <ul className="divide-y divide-border rounded-2xl border border-border">
-          {options.map((o) => (
-            <li key={o.exerciseId} className="flex items-center justify-between gap-3 px-4 py-3">
-              <span className="min-w-0">
-                <span className="block text-base font-semibold">{o.name}</span>
-                <span className="block text-sm text-muted">{o.primaryMuscles.map(muscleName).join(", ")}</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => onPick(o, reason, remember)}
-                className="min-h-11 shrink-0 rounded-xl bg-accent px-3 text-sm font-semibold text-accent-foreground"
-              >
-                {t.workout.useThis}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <>
+          <p className="text-sm text-muted">{t.workout.suggestionIntro(current.name)}</p>
+          <div className="space-y-2 rounded-2xl border border-border p-4">
+            <div className="flex items-start gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="text-xl font-bold">{o.name}</p>
+                <p className="text-sm text-muted">{o.primaryMuscles.map(muscleName).join(", ")}</p>
+              </div>
+              {o.photoUrl && (
+                // eslint-disable-next-line @next/next/no-img-element -- signeret URL, udløber efter 1 time
+                <img src={o.photoUrl} alt={t.workout.machinePhoto} className="size-16 shrink-0 rounded-xl bg-background object-cover" />
+              )}
+            </div>
+            <ExerciseIllustration slug={o.slug} className="mx-auto max-w-60" />
+          </div>
+          <Button onClick={() => onPick(o, reason, remember)}>{t.workout.useThis}</Button>
+          {options.length > 1 && (
+            <Button variant="secondary" onClick={() => setI(i + 1)}>
+              {t.workout.otherSuggestion((i % options.length) + 1, options.length)}
+            </Button>
+          )}
+          <label className="flex min-h-11 cursor-pointer items-center gap-3">
+            <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="h-5 w-5 accent-[var(--accent)]" />
+            <span className="text-sm font-semibold">{t.workout.remember}</span>
+          </label>
+        </>
       )}
-      <Button variant="secondary" onClick={() => onSkip(reason, remember)}>
+      <button
+        type="button"
+        onClick={() => onSkip(reason, remember)}
+        className="min-h-11 w-full text-sm font-semibold text-muted underline underline-offset-2"
+      >
         {t.workout.skipExercise}
-      </Button>
+      </button>
     </Sheet>
   );
 }
