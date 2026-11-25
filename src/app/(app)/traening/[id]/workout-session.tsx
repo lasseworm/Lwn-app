@@ -724,6 +724,9 @@ function AlternativesSheet({
           </label>
         </>
       )}
+      <Button variant="secondary" onClick={onClose}>
+        {t.workout.cancel}
+      </Button>
       <button
         type="button"
         onClick={() => onSkip(reason, remember)}
