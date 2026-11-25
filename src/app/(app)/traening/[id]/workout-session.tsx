@@ -32,6 +32,8 @@ export type AltOption = {
   settings: WeightSettings;
   load: LoadType;
   state: ProgressState | null;
+  /** Signeret link til centrets eget foto af maskinen (udløber efter 1 time) */
+  photoUrl: string | null;
 };
 
 export type SessionItem = {
@@ -357,14 +359,22 @@ export function WorkoutSession({
 
       {/* -------------------------------------------------------------- Øvelse */}
       <Card className="space-y-4">
-        <div>
-          <h1 className="text-3xl font-black leading-tight tracking-tight">{opt.name}</h1>
-          <p className="mt-1 text-sm text-muted">
-            {opt.primaryMuscles.map(muscleName).join(", ")} ·{" "}
-            <Link href={`/katalog/${opt.machineTypeSlug}`} className="font-semibold underline underline-offset-2">
-              {t.workout.instructions}
-            </Link>
-          </p>
+        <div className="flex items-start gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-3xl font-black leading-tight tracking-tight">{opt.name}</h1>
+            <p className="mt-1 text-sm text-muted">
+              {opt.primaryMuscles.map(muscleName).join(", ")} ·{" "}
+              <Link href={`/katalog/${opt.machineTypeSlug}`} className="font-semibold underline underline-offset-2">
+                {t.workout.instructions}
+              </Link>
+            </p>
+          </div>
+          {opt.photoUrl && (
+            <a href={opt.photoUrl} target="_blank" rel="noopener noreferrer" className="shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element -- signeret URL, udløber efter 1 time */}
+              <img src={opt.photoUrl} alt={t.workout.machinePhoto} className="size-24 rounded-xl bg-background object-cover" />
+            </a>
+          )}
         </div>
 
         {cur.status === "stopped" ? (

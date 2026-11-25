@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ButtonLink, Card } from "@/components/ui";
 import { requireUser } from "@/lib/gyms";
+import { PHOTO_BUCKET } from "@/lib/ai/photo";
 import { loadCatalog, loadGymEquipment, loadPreferences } from "@/lib/training/data";
 import { loadTypeFor } from "@/lib/training/generator";
 import type { ProgressState } from "@/lib/training/progression";
@@ -54,6 +55,14 @@ export default async function WorkoutPage(props: PageProps<"/traening/[id]">) {
   const eqById = new Map(equipment.map((e) => [e.id, e]));
   const progressMap = new Map((progressRows ?? []).map((p) => [`${p.exercise_id}|${p.equipment_id}`, p]));
 
+  // Centrets egne fotos af maskinerne (signerede links, 1 time)
+  const photoPaths = [...new Set(equipment.map((e) => e.photo_path).filter((p): p is string => !!p))];
+  const photoUrls = new Map<string, string>();
+  if (photoPaths.length > 0) {
+    const { data: signed } = await supabase.storage.from(PHOTO_BUCKET).createSignedUrls(photoPaths, 3600);
+    for (const s of signed ?? []) if (s.path && s.signedUrl) photoUrls.set(s.path, s.signedUrl);
+  }
+
   const toOption = (exerciseId: string, equipmentId?: string | null): AltOption | null => {
     const ex = catalogById.get(exerciseId);
     if (!ex) return null;
@@ -77,6 +86,7 @@ export default async function WorkoutPage(props: PageProps<"/traening/[id]">) {
       },
       load: loadTypeFor(ex.machine_type_slug, ex.machine_category, eq.weight_step_kg != null),
       state: (progressMap.get(`${ex.id}|${eq.id}`) as ProgressState | undefined) ?? null,
+      photoUrl: (eq.photo_path && photoUrls.get(eq.photo_path)) || null,
     };
   };
 
