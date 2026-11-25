@@ -351,6 +351,10 @@ export const da = {
     cancel: "Annullér",
     alternativesTitle: "Find alternativ",
     alternativesIntro: "Øvelser der træner de samme muskler, og som dit center har udstyr til.",
+    suggestionIntro: (name: string) => `I stedet for ${name} foreslår vi en øvelse, der træner nogenlunde det samme:`,
+    otherSuggestion: (n: number, total: number) => `Vis et andet forslag (${n} af ${total})`,
+    occupiedMoved: (name: string) => `${name} er flyttet til sidst i passet. Tag den, når maskinen er ledig.`,
+    occupiedLast: "Det er den sidste øvelse, du mangler. Vent lidt på maskinen, eller tryk \"Find alternativ\".",
     noAlternatives: "Ingen alternativer med udstyret i dit center.",
     reasonLabel: "Hvorfor?",
     reasons: {

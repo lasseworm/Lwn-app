@@ -76,6 +76,7 @@ export default async function WorkoutPage(props: PageProps<"/traening/[id]">) {
       movementPattern: ex.movement_pattern,
       primaryMuscles: ex.primary_muscles,
       isFreeWeight: ex.is_free_weight,
+      beginnerFriendly: ex.beginner_friendly !== false,
       repMin: ex.default_rep_min,
       repMax: ex.default_rep_max,
       equipmentId: eq.id,
