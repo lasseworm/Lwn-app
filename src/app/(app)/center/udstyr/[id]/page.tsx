@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BackLink, Button, Card, StatusBadge } from "@/components/ui";
+import { BackLink, Button, ButtonLink, Card, StatusBadge } from "@/components/ui";
 import { requireUser } from "@/lib/gyms";
 import { PHOTO_BUCKET } from "@/lib/ai/photo";
 import { validWeights } from "@/lib/equipment/weights";
@@ -16,7 +16,10 @@ const fmtKg = (n: number) => n.toLocaleString("da-DK", { maximumFractionDigits: 
 
 export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id]">) {
   const { id } = await props.params;
-  const justAdded = (await props.searchParams).ny === "1";
+  const sp = await props.searchParams;
+  const justAdded = sp.ny === "1";
+  // Vist efter tilføjelse – også når en eksisterende maskine blev valgt i guiden
+  const fromWizard = justAdded || sp.valgt === "1";
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   const { supabase, user } = await requireUser();
 
@@ -58,6 +61,15 @@ export default async function EquipmentPage(props: PageProps<"/center/udstyr/[id
         <p role="status" className="rounded-2xl border border-accent/50 bg-accent/15 p-4 text-sm">
           ✓ {t.equipment.savedPending}
         </p>
+      )}
+
+      {fromWizard && (
+        <div className="grid gap-2 sm:grid-cols-2">
+          <ButtonLink href="/center/tilfoej">{t.equipment.addAnother}</ButtonLink>
+          <ButtonLink href="/hjem" variant="secondary">
+            {t.equipment.toHome}
+          </ButtonLink>
+        </div>
       )}
 
       {photoUrl && (
